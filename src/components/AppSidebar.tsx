@@ -90,8 +90,8 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r border-border">
       <SidebarHeader className="border-b border-border px-5 py-4">
         <NavLink to="/" className="flex items-center gap-3">
-          <div className="h-9 w-9 rounded-xl overflow-hidden shrink-0 shadow-md ring-1 ring-white/10">
-            <img alt="Actus One" className="h-full w-full object-cover" src="/lovable-uploads/cfa08f7c-8ae0-4e1e-8835-233d8fa03486.png" />
+          <div className="h-10 w-10 rounded-lg overflow-hidden shrink-0 shadow-md">
+            <img alt="Actus One" className="h-full w-full object-contain" src="/lovable-uploads/cfa08f7c-8ae0-4e1e-8835-233d8fa03486.png" />
           </div>
           {!collapsed &&
           <div className="flex flex-col justify-center">
