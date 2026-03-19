@@ -88,15 +88,15 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r border-border">
-      <SidebarHeader className="border-b border-border px-4 py-3">
-        <NavLink to="/" className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-lg overflow-hidden shrink-0">
-            <img alt="Actus One" className="h-full w-full object-cover text-[#616161]/0 bg-[#161617]/[0.33] border-0" src="/lovable-uploads/e21e89e9-d1f3-4165-b6a9-e37a2e9c2998.png" />
+      <SidebarHeader className="border-b border-border px-5 py-4">
+        <NavLink to="/" className="flex items-center gap-3">
+          <div className="h-9 w-9 rounded-xl overflow-hidden shrink-0 shadow-md ring-1 ring-white/10">
+            <img alt="Actus One" className="h-full w-full object-cover" src="/lovable-uploads/cfa08f7c-8ae0-4e1e-8835-233d8fa03486.png" />
           </div>
           {!collapsed &&
-          <div>
-              <h1 className="text-sm font-bold text-foreground tracking-tight">Actus One</h1>
-              <p className="text-[10px] text-muted-foreground">Gestão Jurídica Inteligente</p>
+          <div className="flex flex-col justify-center">
+              <h1 className="text-[15px] font-bold text-foreground tracking-tight leading-tight">Actus One</h1>
+              <p className="text-[10px] text-muted-foreground leading-tight mt-0.5">Gestão Jurídica Inteligente</p>
             </div>
           }
         </NavLink>
