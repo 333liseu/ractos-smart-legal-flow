@@ -28,7 +28,7 @@ export default function FinancialPage() {
   return (
     <AppLayout>
       <div className="p-6 max-w-[1400px] mx-auto">
-        <motion.div initial="hidden" animate="visible" variants={{ staggerChildren: 0.05 }}>
+        <motion.div initial="hidden" animate="visible" variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.05 } } }}>
           <motion.div variants={fadeUp} className="mb-6">
             <h1 className="text-xl font-bold text-foreground tracking-tight">Financeiro</h1>
             <p className="text-sm text-muted-foreground">Gestão de contratos, honorários e pagamentos</p>

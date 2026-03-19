@@ -22,7 +22,7 @@ export default function DashboardPage() {
   return (
     <AppLayout>
       <div className="p-6 space-y-6 max-w-[1400px] mx-auto">
-        <motion.div initial="hidden" animate="visible" variants={stagger}>
+        <motion.div initial="hidden" animate="visible" variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.05 } } }}>
           <motion.div variants={fadeUp} className="mb-6">
             <h1 className="text-xl font-bold text-foreground tracking-tight">Dashboard</h1>
             <p className="text-sm text-muted-foreground">Visão geral do escritório · {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>

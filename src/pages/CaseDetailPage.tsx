@@ -33,7 +33,7 @@ export default function CaseDetailPage() {
   return (
     <AppLayout>
       <div className="p-6 max-w-[1400px] mx-auto">
-        <motion.div initial="hidden" animate="visible" variants={{ staggerChildren: 0.05 }}>
+        <motion.div initial="hidden" animate="visible" variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.05 } } }}>
           <motion.div variants={fadeUp}>
             <Link to="/cases" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors">
               <ArrowLeft className="h-4 w-4" /> Voltar aos Processos

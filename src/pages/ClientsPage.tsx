@@ -18,7 +18,7 @@ export default function ClientsPage() {
   return (
     <AppLayout>
       <div className="p-6 max-w-[1400px] mx-auto">
-        <motion.div initial="hidden" animate="visible" variants={{ staggerChildren: 0.05 }}>
+        <motion.div initial="hidden" animate="visible" variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.05 } } }}>
           <motion.div variants={fadeUp} className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-xl font-bold text-foreground tracking-tight">Clientes</h1>

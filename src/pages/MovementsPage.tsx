@@ -18,7 +18,7 @@ export default function MovementsPage() {
   return (
     <AppLayout>
       <div className="p-6 max-w-[1400px] mx-auto">
-        <motion.div initial="hidden" animate="visible" variants={{ staggerChildren: 0.05 }}>
+        <motion.div initial="hidden" animate="visible" variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.05 } } }}>
           <motion.div variants={fadeUp} className="mb-6">
             <h1 className="text-xl font-bold text-foreground tracking-tight flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-ai" /> Movimentações
