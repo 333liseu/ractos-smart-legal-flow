@@ -95,8 +95,8 @@ export function AppSidebar() {
           </div>
           {!collapsed &&
           <div className="flex flex-col justify-center">
-              <h1 className="text-[15px] font-bold text-foreground tracking-tight leading-tight">Actus One</h1>
-              <p className="text-[10px] text-muted-foreground leading-tight mt-0.5">Gestão Jurídica Inteligente</p>
+              <h1 className="text-base font-bold text-foreground tracking-tight leading-tight">Actus One</h1>
+              <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">Gestão Jurídica Inteligente</p>
             </div>
           }
         </NavLink>
