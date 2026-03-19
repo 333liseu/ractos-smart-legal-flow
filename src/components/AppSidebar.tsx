@@ -10,11 +10,11 @@ import {
   Bell,
   MessageCircle,
   Sparkles,
-  Settings,
-} from "lucide-react";
+  Settings } from
+"lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
-import actusIcon from "@/assets/actus-icon.png";
+import actusIcon from "@/assets/actus-icon.jpeg";
 import {
   Sidebar,
   SidebarContent,
@@ -26,79 +26,79 @@ import {
   SidebarMenuItem,
   SidebarHeader,
   SidebarFooter,
-  useSidebar,
-} from "@/components/ui/sidebar";
+  useSidebar } from
+"@/components/ui/sidebar";
 
 const mainItems = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "Processos", url: "/cases", icon: Briefcase },
-  { title: "Movimentações", url: "/movements", icon: FileText },
-  { title: "Tarefas", url: "/tasks", icon: ListTodo },
-  { title: "Clientes", url: "/clients", icon: Users },
-  { title: "Documentos", url: "/documents", icon: FolderOpen },
-];
+{ title: "Dashboard", url: "/", icon: LayoutDashboard },
+{ title: "Processos", url: "/cases", icon: Briefcase },
+{ title: "Movimentações", url: "/movements", icon: FileText },
+{ title: "Tarefas", url: "/tasks", icon: ListTodo },
+{ title: "Clientes", url: "/clients", icon: Users },
+{ title: "Documentos", url: "/documents", icon: FolderOpen }];
+
 
 const financeItems = [
-  { title: "Financeiro", url: "/financial", icon: DollarSign },
-];
+{ title: "Financeiro", url: "/financial", icon: DollarSign }];
+
 
 const intelligenceItems = [
-  { title: "Actus Zap", url: "/actus-zap", icon: MessageCircle },
-  { title: "Gerador de Docs", url: "/doc-generator", icon: Sparkles },
-  { title: "Workspace", url: "/workspace", icon: Columns3 },
-];
+{ title: "Actus Zap", url: "/actus-zap", icon: MessageCircle },
+{ title: "Gerador de Docs", url: "/doc-generator", icon: Sparkles },
+{ title: "Workspace", url: "/workspace", icon: Columns3 }];
+
 
 const systemItems = [
-  { title: "Notificações", url: "/notifications", icon: Bell },
-  { title: "Configurações", url: "/settings", icon: Settings },
-];
+{ title: "Notificações", url: "/notifications", icon: Bell },
+{ title: "Configurações", url: "/settings", icon: Settings }];
+
 
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const location = useLocation();
-  const isActive = (path: string) => location.pathname === path || (path !== "/" && location.pathname.startsWith(path));
+  const isActive = (path: string) => location.pathname === path || path !== "/" && location.pathname.startsWith(path);
 
-  const renderGroup = (label: string, items: typeof mainItems) => (
-    <SidebarGroup>
+  const renderGroup = (label: string, items: typeof mainItems) =>
+  <SidebarGroup>
       <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-muted-foreground/60 font-semibold">
         {!collapsed && label}
       </SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
-          {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
+          {items.map((item) =>
+        <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild isActive={isActive(item.url)}>
                 <NavLink
-                  to={item.url}
-                  end={item.url === "/"}
-                  className="gap-3 text-sm font-medium text-sidebar-foreground hover:text-foreground hover:bg-sidebar-accent transition-colors"
-                  activeClassName="bg-sidebar-accent text-foreground"
-                >
+              to={item.url}
+              end={item.url === "/"}
+              className="gap-3 text-sm font-medium text-sidebar-foreground hover:text-foreground hover:bg-sidebar-accent transition-colors"
+              activeClassName="bg-sidebar-accent text-foreground">
+              
                   <item.icon className="h-4 w-4 shrink-0" />
                   {!collapsed && <span>{item.title}</span>}
                 </NavLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
-          ))}
+        )}
         </SidebarMenu>
       </SidebarGroupContent>
-    </SidebarGroup>
-  );
+    </SidebarGroup>;
+
 
   return (
     <Sidebar collapsible="icon" className="border-r border-border">
       <SidebarHeader className="border-b border-border px-4 py-3">
         <NavLink to="/" className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-lg overflow-hidden shrink-0">
-            <img src={actusIcon} alt="Actus One" className="h-full w-full object-cover" />
+            <img alt="Actus One" className="h-full w-full object-cover text-[#616161]/0 bg-[#161617]/[0.33] border-0" src="/lovable-uploads/e21e89e9-d1f3-4165-b6a9-e37a2e9c2998.png" />
           </div>
-          {!collapsed && (
-            <div>
+          {!collapsed &&
+          <div>
               <h1 className="text-sm font-bold text-foreground tracking-tight">Actus One</h1>
               <p className="text-[10px] text-muted-foreground">Gestão Jurídica Inteligente</p>
             </div>
-          )}
+          }
         </NavLink>
       </SidebarHeader>
 
@@ -110,8 +110,8 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="border-t border-border p-3">
-        {!collapsed && (
-          <div className="flex items-center gap-2">
+        {!collapsed &&
+        <div className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center">
               <span className="text-xs font-medium text-foreground">DG</span>
             </div>
@@ -120,8 +120,8 @@ export function AppSidebar() {
               <p className="text-[10px] text-muted-foreground">Administrador</p>
             </div>
           </div>
-        )}
+        }
       </SidebarFooter>
-    </Sidebar>
-  );
+    </Sidebar>);
+
 }
