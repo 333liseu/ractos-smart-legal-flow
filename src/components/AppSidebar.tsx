@@ -116,7 +116,7 @@ export function AppSidebar() {
               <span className="text-xs font-medium text-foreground">DG</span>
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-medium text-foreground truncate">Dr. Carlos Andrade</p>
+              <p className="text-xs font-medium text-foreground truncate">Eliseu Pena</p>
               <p className="text-[10px] text-muted-foreground">Administrador</p>
             </div>
           </div>
