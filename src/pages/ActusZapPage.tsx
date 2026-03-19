@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
-const fadeUp = { hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } } };
+import { fadeUp } from '@/lib/animations';
 
 const mockConversations = [
   { id: '1', name: 'Ana Beatriz Souza', lastMessage: 'Qual o status do meu processo?', time: '14:32', unread: 2, botActive: true },

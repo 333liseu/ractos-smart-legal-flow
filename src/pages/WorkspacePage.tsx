@@ -4,7 +4,7 @@ import { useState } from "react";
 import { GripVertical, Plus, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const fadeUp = { hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } } };
+import { fadeUp } from '@/lib/animations';
 
 interface KanbanCard {
   id: string;

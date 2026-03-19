@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
-const fadeUp = { hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } } };
+import { fadeUp } from '@/lib/animations';
 
 function TaskCard({ task }: { task: typeof mockTasks[0] }) {
   const isOverdue = new Date(task.dueDate) < new Date() && task.status !== 'Concluída';

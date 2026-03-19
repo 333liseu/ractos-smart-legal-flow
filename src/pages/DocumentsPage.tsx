@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 
-const fadeUp = { hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } } };
+import { fadeUp } from '@/lib/animations';
 
 const mockDocs = [
   { id: '1', name: 'Petição Inicial - Ana Beatriz.pdf', case: '4001234-56.2024.8.26.0400', size: '2.4 MB', date: '2024-02-15', tags: ['petição', 'inicial'] },

@@ -3,7 +3,7 @@ import { Bell, Check, AlertTriangle, FileText, ListTodo } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
-const fadeUp = { hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } } };
+import { fadeUp } from '@/lib/animations';
 
 const notifications = [
   { id: '1', type: 'movement', title: 'Nova movimentação detectada', description: 'Sentença Proferida no processo 4001234-56.2024.8.26.0400', time: 'Há 2 horas', read: false, icon: FileText },
