@@ -90,12 +90,12 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r border-border">
       <SidebarHeader className="border-b border-border px-4 py-3">
         <NavLink to="/" className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
-            <span className="text-primary-foreground font-bold text-sm">R</span>
+          <div className="h-8 w-8 rounded-lg overflow-hidden shrink-0">
+            <img src={actusIcon} alt="Actus One" className="h-full w-full object-cover" />
           </div>
           {!collapsed && (
             <div>
-              <h1 className="text-sm font-bold text-foreground tracking-tight">Ractos One</h1>
+              <h1 className="text-sm font-bold text-foreground tracking-tight">Actus One</h1>
               <p className="text-[10px] text-muted-foreground">Gestão Jurídica Inteligente</p>
             </div>
           )}
