@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
+import actusIcon from "@/assets/actus-icon.jpeg";
 import {
   Sidebar,
   SidebarContent,
@@ -89,12 +90,12 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r border-border">
       <SidebarHeader className="border-b border-border px-4 py-3">
         <NavLink to="/" className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
-            <span className="text-primary-foreground font-bold text-sm">R</span>
+          <div className="h-8 w-8 rounded-lg overflow-hidden shrink-0">
+            <img src={actusIcon} alt="Actus One" className="h-full w-full object-cover" />
           </div>
           {!collapsed && (
             <div>
-              <h1 className="text-sm font-bold text-foreground tracking-tight">Ractos One</h1>
+              <h1 className="text-sm font-bold text-foreground tracking-tight">Actus One</h1>
               <p className="text-[10px] text-muted-foreground">Gestão Jurídica Inteligente</p>
             </div>
           )}
@@ -115,7 +116,7 @@ export function AppSidebar() {
               <span className="text-xs font-medium text-foreground">DG</span>
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-medium text-foreground truncate">Dr. Carlos Andrade</p>
+              <p className="text-xs font-medium text-foreground truncate">Eliseu Pena</p>
               <p className="text-[10px] text-muted-foreground">Administrador</p>
             </div>
           </div>
