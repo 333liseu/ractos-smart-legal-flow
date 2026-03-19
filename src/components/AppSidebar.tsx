@@ -14,7 +14,7 @@ import {
 "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
-import actusIcon from "@/assets/actus-logo-clean.png";
+const actusIcon = "/lovable-uploads/cfa08f7c-8ae0-4e1e-8835-233d8fa03486.png";
 import {
   Sidebar,
   SidebarContent,
@@ -90,9 +90,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r border-border">
       <SidebarHeader className="border-b border-border px-5 py-4">
         <NavLink to="/" className="flex items-center gap-3.5">
-          <div className="h-12 w-12 shrink-0 flex items-center justify-center">
-            <img alt="Actus One" className="block h-full w-full object-contain" src={actusIcon} />
-          </div>
+          <img alt="Actus One" className="h-10 w-10 shrink-0 object-contain" src={actusIcon} style={{ imageRendering: 'auto' }} />
           {!collapsed &&
           <div className="flex flex-col justify-center">
               <h1 className="text-base font-bold text-foreground tracking-tight leading-none">Actus One</h1>
