@@ -1,19 +1,20 @@
 
 
-## Problem
+## Problema
 
-The logo in the sidebar header looks blurry and unprofessional. The `h-9 w-9` (36x36px) container is too small for crisp rendering, and the image may be getting poorly scaled. The reference screenshot shows a clean, sharp icon with proper spacing.
+A logo está embaçada e parece "colada" porque:
+1. O arquivo `actus-logo-clean.png` foi processado por um script Python que pode ter degradado a qualidade
+2. A imagem pode ter fundo opaco (branco/cinza) que não se integra ao fundo escuro da sidebar
+3. O container `h-12 w-12` pode estar escalando a imagem de forma inadequada
 
-## Plan
+## Plano
 
-**File: `src/components/AppSidebar.tsx`**
+**Arquivo: `src/components/AppSidebar.tsx`**
 
-1. Increase icon container from `h-9 w-9` to `h-10 w-10` (40px) for sharper rendering at a natural size
-2. Add `image-rendering: auto` and remove the `ring` overlay that adds visual noise
-3. Use `rounded-lg` instead of `rounded-xl` to match the reference more closely
-4. Bump title to `text-base` (16px) and subtitle to `text-[11px]` for better hierarchy
-5. Fix the initials in footer from "DG" to "EP" (Eliseu Pena)
-6. Add `object-contain` instead of `object-cover` to prevent cropping/distortion
+1. **Usar a imagem original do upload** — trocar o `import` do asset processado pelo arquivo original em `/lovable-uploads/cfa08f7c-8ae0-4e1e-8835-233d8fa03486.png` que está em alta qualidade
+2. **Renderização nítida** — adicionar `style={{ imageRendering: 'auto' }}` e usar tamanho `h-10 w-10` (40px) que é mais natural para ícones
+3. **Sem container extra** — a `<img>` direta, sem `div` wrapper que adiciona complexidade desnecessária
+4. **Sem bordas, sombras ou rings** — apenas a imagem pura integrada ao fundo da sidebar
 
-These are small CSS/class tweaks in one file only.
+Resultado: logo nítida, sem aparência de "print colado", integrada naturalmente ao layout escuro.
 
