@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
-import actusIcon from "@/assets/actus-icon.jpeg";
+import actusIcon from "@/assets/actus-icon.png";
 import {
   Sidebar,
   SidebarContent,
