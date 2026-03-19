@@ -90,13 +90,13 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r border-border">
       <SidebarHeader className="border-b border-border px-5 py-4">
         <NavLink to="/" className="flex items-center gap-3">
-          <div className="h-9 w-9 rounded-xl overflow-hidden shrink-0 shadow-md ring-1 ring-white/10">
-            <img alt="Actus One" className="h-full w-full object-cover" src="/lovable-uploads/cfa08f7c-8ae0-4e1e-8835-233d8fa03486.png" />
+          <div className="h-10 w-10 rounded-lg overflow-hidden shrink-0 shadow-md">
+            <img alt="Actus One" className="h-full w-full object-contain" src="/lovable-uploads/cfa08f7c-8ae0-4e1e-8835-233d8fa03486.png" />
           </div>
           {!collapsed &&
           <div className="flex flex-col justify-center">
-              <h1 className="text-[15px] font-bold text-foreground tracking-tight leading-tight">Actus One</h1>
-              <p className="text-[10px] text-muted-foreground leading-tight mt-0.5">Gestão Jurídica Inteligente</p>
+              <h1 className="text-base font-bold text-foreground tracking-tight leading-tight">Actus One</h1>
+              <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">Gestão Jurídica Inteligente</p>
             </div>
           }
         </NavLink>
@@ -113,7 +113,7 @@ export function AppSidebar() {
         {!collapsed &&
         <div className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center">
-              <span className="text-xs font-medium text-foreground">DG</span>
+              <span className="text-xs font-medium text-foreground">EP</span>
             </div>
             <div className="min-w-0">
               <p className="text-xs font-medium text-foreground truncate">Eliseu Pena</p>
