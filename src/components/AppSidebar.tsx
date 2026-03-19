@@ -113,7 +113,7 @@ export function AppSidebar() {
         {!collapsed &&
         <div className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center">
-              <span className="text-xs font-medium text-foreground">DG</span>
+              <span className="text-xs font-medium text-foreground">EP</span>
             </div>
             <div className="min-w-0">
               <p className="text-xs font-medium text-foreground truncate">Eliseu Pena</p>
