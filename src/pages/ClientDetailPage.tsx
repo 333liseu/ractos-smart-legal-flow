@@ -1,0 +1,129 @@
+import { AppLayout } from "@/components/AppLayout";
+import { mockActusClients, mockActusProcesses } from "@/lib/mock-data";
+import { StatusBadge } from "@/components/StatusBadge";
+import { useParams, Link } from "react-router-dom";
+import { ArrowLeft, Edit, FileText, Plus, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+import { fadeUp } from '@/lib/animations';
+
+export default function ClientDetailPage() {
+  const { id } = useParams();
+  const client = mockActusClients.find(c => c.id === id);
+  if (!client) return <AppLayout><div className="p-6 text-muted-foreground">Cliente não encontrado</div></AppLayout>;
+
+  const clientProcesses = mockActusProcesses.filter(p => p.cliente_id === id);
+
+  return (
+    <AppLayout>
+      <div className="p-6 max-w-[1400px] mx-auto">
+        <motion.div initial="hidden" animate="visible" variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.05 } } }}>
+          <motion.div variants={fadeUp}>
+            <Link to="/clients" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors">
+              <ArrowLeft className="h-4 w-4" /> Voltar aos Clientes
+            </Link>
+          </motion.div>
+
+          <motion.div variants={fadeUp} className="flex items-start justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <div className="h-14 w-14 rounded-full bg-secondary flex items-center justify-center">
+                <span className="text-lg font-bold text-foreground">{client.nome_razao_social.split(' ').map(w => w[0]).slice(0, 2).join('')}</span>
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-foreground tracking-tight">{client.nome_razao_social}</h1>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground bg-secondary rounded px-1.5 py-0.5">{client.tipo_pessoa}</span>
+                  {client.cpf_cnpj && <span className="text-xs font-mono text-muted-foreground">{client.cpf_cnpj}</span>}
+                  <span className="text-[10px] text-success font-medium">{client.status_cliente}</span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-0.5">Responsável: {client.responsavel_interno} · {client.processos_count} Processos Vinculados</p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" className="gap-1.5"><Edit className="h-3.5 w-3.5" /> Editar Cadastro</Button>
+              <Button variant="outline" size="sm" className="gap-1.5"><FileText className="h-3.5 w-3.5" /> Adicionar Documento</Button>
+              <Button size="sm" className="gap-1.5"><Plus className="h-3.5 w-3.5" /> Novo Processo</Button>
+            </div>
+          </motion.div>
+
+          <motion.div variants={fadeUp} className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="lg:col-span-2 space-y-4">
+              <div className="bg-card rounded-lg border border-border p-5 shadow-card">
+                <h2 className="text-sm font-semibold text-foreground mb-4">Dados Cadastrais</h2>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { label: 'Nome / Razão Social', value: client.nome_razao_social },
+                    { label: 'Tipo de Pessoa', value: client.tipo_pessoa === 'PF' ? 'Pessoa Física' : 'Pessoa Jurídica' },
+                    { label: 'CPF/CNPJ', value: client.cpf_cnpj || '-' },
+                    { label: 'E-mail', value: client.email || '-' },
+                    { label: 'Telefone', value: client.telefone || '-' },
+                    { label: 'Cidade/Estado', value: `${client.cidade || '-'}/${client.estado || '-'}` },
+                    { label: 'Tipo de Contrato', value: client.tipo_contrato || '-' },
+                    { label: 'Responsável', value: client.responsavel_interno },
+                  ].map(d => (
+                    <div key={d.label}>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{d.label}</p>
+                      <p className="text-xs text-foreground font-medium mt-0.5">{d.value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-card rounded-lg border border-border p-5 shadow-card">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-sm font-semibold text-foreground">Processos Vinculados</h2>
+                  <span className="text-[10px] text-muted-foreground">{clientProcesses.length} processos</span>
+                </div>
+                {clientProcesses.length > 0 ? (
+                  <div className="space-y-2">
+                    {clientProcesses.map(p => (
+                      <Link key={p.id} to={`/cases/${p.id}`} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-secondary/50 transition-colors border border-border">
+                        <div>
+                          <p className="text-xs font-medium text-foreground hover:text-primary">{p.titulo}</p>
+                          <p className="text-[10px] font-mono text-muted-foreground tabular-nums">{p.numero_cnj}</p>
+                        </div>
+                        <StatusBadge status={p.status} />
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs text-muted-foreground text-center py-4">Nenhum processo vinculado</p>
+                )}
+              </div>
+
+              <div className="bg-card rounded-lg border border-border p-5 shadow-card">
+                <h2 className="text-sm font-semibold text-foreground mb-4">Pagamentos do Cliente para Escritório</h2>
+                <div className="text-xs text-muted-foreground text-center py-4">Nenhum pagamento registrado</div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="bg-card rounded-lg border border-border p-5 shadow-card">
+                <h2 className="text-sm font-semibold text-foreground mb-3">Resumo do Cliente</h2>
+                <div className="space-y-2">
+                  <div className="flex justify-between"><span className="text-xs text-muted-foreground">Processos Vinculados</span><span className="text-xs font-medium text-foreground">{client.processos_count}</span></div>
+                  <div className="flex justify-between"><span className="text-xs text-muted-foreground">Status</span><span className="text-xs font-medium text-success">{client.status_cliente}</span></div>
+                  <div className="flex justify-between"><span className="text-xs text-muted-foreground">Tipo de Contrato</span><span className="text-xs font-medium text-foreground">{client.tipo_contrato || '-'}</span></div>
+                  {client.profissao_nome_fantasia && <div className="flex justify-between"><span className="text-xs text-muted-foreground">Profissão/Fantasia</span><span className="text-xs font-medium text-foreground">{client.profissao_nome_fantasia}</span></div>}
+                </div>
+              </div>
+
+              <div className="bg-card rounded-lg border border-border p-5 shadow-card">
+                <h2 className="text-sm font-semibold text-foreground mb-3">Documentos do Cliente</h2>
+                <div className="space-y-2">
+                  {['Contrato de Honorários', 'Procuração', 'Documentos Pessoais'].map(doc => (
+                    <div key={doc} className="flex items-center gap-2 py-1.5 border-b border-border last:border-0">
+                      <FileText className="h-3.5 w-3.5 text-primary shrink-0" />
+                      <span className="text-xs text-muted-foreground">{doc}</span>
+                    </div>
+                  ))}
+                </div>
+                <Button variant="outline" size="sm" className="w-full mt-3 text-xs">Adicionar Documento</Button>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+    </AppLayout>
+  );
+}
