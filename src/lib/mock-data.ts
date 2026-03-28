@@ -259,11 +259,11 @@ export const mockActusIntimations: ActusIntimation[] = mockActusProcesses.slice(
   const lida = i < 5 ? 'Lida' as const : 'Não lida' as const;
   const triada = i < 3 ? 'Triada' as const : 'Não triada' as const;
   return {
-    id: \`int-\${i}\`,
+    id: `int-${i}`,
     processo_id: p.id,
     processo_cnj: p.numero_cnj,
-    data_intimacao: \`2026-03-\${String(Math.max(1, day)).padStart(2, '0')}\`,
-    prazo_em: prazoDay <= 31 ? \`2026-03-\${String(prazoDay).padStart(2, '0')}\` : \`2026-04-\${String(prazoDay - 31).padStart(2, '0')}\`,
+    data_intimacao: `2026-03-${String(Math.max(1, day)).padStart(2, '0')}`,
+    prazo_em: prazoDay <= 31 ? `2026-03-${String(prazoDay).padStart(2, '0')}` : `2026-04-${String(prazoDay - 31).padStart(2, '0')}`,
     resumo: tmpl.resumo,
     classificacao: tmpl.classificacao,
     responsavel: p.responsavel_principal,
@@ -280,11 +280,11 @@ export const mockActusDeadlines: ActusDeadline[] = mockActusProcesses.slice(0, 1
   const day = (i * 2) + 1;
   const urgencias: Array<'Alta' | 'Média' | 'Baixa'> = ['Alta', 'Média', 'Baixa'];
   return {
-    id: \`dl-\${i}\`,
+    id: `dl-${i}`,
     processo_id: p.id,
     processo_cnj: p.numero_cnj,
-    data_prazo: day <= 28 ? \`2026-03-\${String(day).padStart(2, '0')}\` : \`2026-04-\${String(day - 28).padStart(2, '0')}\`,
-    descricao: \`Prazo para \${tarefas[i % tarefas.length].toLowerCase()}\`,
+    data_prazo: day <= 28 ? `2026-03-${String(day).padStart(2, '0')}` : `2026-04-${String(day - 28).padStart(2, '0')}`,
+    descricao: `Prazo para ${tarefas[i % tarefas.length].toLowerCase()}`,
     tarefa: tarefas[i % tarefas.length],
     situacao: i < 3 ? 'Vencido' as const : i < 10 ? 'Pendente' as const : 'Cumprido' as const,
     urgencia: urgencias[i % 3],
@@ -299,8 +299,8 @@ const docTypes = ['Procuração', 'Substabelecimento', 'Contrato', 'Proposta de 
 const docStatuses: Array<'Rascunho' | 'Finalizado' | 'Assinatura pendente'> = ['Rascunho', 'Finalizado', 'Assinatura pendente'];
 
 export const mockActusDocuments: ActusDocument[] = mockActusProcesses.slice(0, 20).map((p, i) => ({
-  id: \`doc-\${i}\`,
-  nome_documento: \`\${docTypes[i % docTypes.length]} - \${p.cliente_principal.split(' ').slice(0, 2).join(' ')}\`,
+  id: `doc-${i}`,
+  nome_documento: `${docTypes[i % docTypes.length]} - ${p.cliente_principal.split(' ').slice(0, 2).join(' ')}`,
   tipo_documento: docTypes[i % docTypes.length],
   cliente_id: p.cliente_id,
   cliente_nome: p.cliente_principal,
@@ -308,7 +308,7 @@ export const mockActusDocuments: ActusDocument[] = mockActusProcesses.slice(0, 2
   processo_cnj: p.numero_cnj,
   responsavel: p.responsavel_principal.split(' ').slice(0, 2).join(' '),
   status_documento: docStatuses[i % 3],
-  ultima_edicao_em: \`2026-03-\${String(28 - i).padStart(2, '0')}\`,
+  ultima_edicao_em: `2026-03-${String(28 - i).padStart(2, '0')}`,
   categoria: docTypes[i % docTypes.length],
 }));
 
