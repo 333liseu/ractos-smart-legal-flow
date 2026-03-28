@@ -1,71 +1,97 @@
 import { AppLayout } from "@/components/AppLayout";
-import { FolderOpen, Upload, Search } from "lucide-react";
+import { mockActusDocuments } from "@/lib/mock-data";
+import { KpiCard } from "@/components/KpiCard";
+import { StatusBadge } from "@/components/StatusBadge";
+import { Search, FolderOpen, Upload, Download, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-
+import { useState } from "react";
 import { fadeUp } from '@/lib/animations';
 
-const mockDocs = [
-  { id: '1', name: 'Petição Inicial - Ana Beatriz.pdf', case: '4001234-56.2024.8.26.0400', size: '2.4 MB', date: '2024-02-15', tags: ['petição', 'inicial'] },
-  { id: '2', name: 'Contestação - Consórcio Nacional.pdf', case: '4001234-56.2024.8.26.0400', size: '1.8 MB', date: '2025-03-17', tags: ['contestação'] },
-  { id: '3', name: 'Laudo Pericial - TechSolutions.pdf', case: '7001234-56.2024.8.26.0700', size: '5.1 MB', date: '2025-01-10', tags: ['perícia', 'laudo'] },
-  { id: '4', name: 'Procuração - Pedro Costa.pdf', case: '3001234-56.2024.8.26.0300', size: '0.5 MB', date: '2024-01-10', tags: ['procuração'] },
-  { id: '5', name: 'Contrato de Honorários - Financeira XYZ.pdf', case: '2001234-56.2024.8.26.0200', size: '1.2 MB', date: '2024-04-05', tags: ['contrato', 'honorários'] },
-];
+const categories = ['Procuração', 'Substabelecimento', 'Contrato', 'Proposta de Honorários', 'RPV', 'Petição', 'Requerimento', 'Declaração'];
 
 export default function DocumentsPage() {
+  const [search, setSearch] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
+
+  const filtered = mockActusDocuments.filter(d => {
+    const matchSearch = d.nome_documento.toLowerCase().includes(search.toLowerCase()) ||
+      (d.cliente_nome || '').toLowerCase().includes(search.toLowerCase());
+    const matchCategory = !categoryFilter || d.categoria === categoryFilter;
+    return matchSearch && matchCategory;
+  });
+
+  const rascunhos = mockActusDocuments.filter(d => d.status_documento === 'Rascunho').length;
+  const finalizados = mockActusDocuments.filter(d => d.status_documento === 'Finalizado').length;
+  const assinatura = mockActusDocuments.filter(d => d.status_documento === 'Assinatura pendente').length;
+
   return (
     <AppLayout>
-      <div className="p-6 max-w-[1400px] mx-auto">
+      <div className="p-6 max-w-[1600px] mx-auto">
         <motion.div initial="hidden" animate="visible" variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.05 } } }}>
           <motion.div variants={fadeUp} className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-xl font-bold text-foreground tracking-tight">Documentos</h1>
-              <p className="text-sm text-muted-foreground">{mockDocs.length} documentos armazenados</p>
+              <p className="text-sm text-muted-foreground">{mockActusDocuments.length} documentos cadastrados</p>
             </div>
-            <Button className="active-scale gap-2"><Upload className="h-4 w-4" /> Upload</Button>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" className="gap-2"><Download className="h-3.5 w-3.5" /> Exportar</Button>
+              <Link to="/doc-generator"><Button variant="outline" size="sm" className="gap-2"><Sparkles className="h-3.5 w-3.5" /> Gerar Documento</Button></Link>
+              <Button className="active-scale gap-2"><Upload className="h-4 w-4" /> Upload</Button>
+            </div>
           </motion.div>
 
-          <motion.div variants={fadeUp} className="mb-4">
-            <div className="relative max-w-md">
+          <motion.div variants={fadeUp} className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+            <KpiCard title="Total" value={mockActusDocuments.length} icon={<FolderOpen className="h-5 w-5" />} />
+            <KpiCard title="Rascunhos" value={rascunhos} icon={<FolderOpen className="h-5 w-5" />} />
+            <KpiCard title="Finalizados" value={finalizados} icon={<FolderOpen className="h-5 w-5" />} variant="success" />
+            <KpiCard title="Assinatura Pendente" value={assinatura} icon={<FolderOpen className="h-5 w-5" />} variant="urgent" />
+          </motion.div>
+
+          <motion.div variants={fadeUp} className="flex items-center gap-3 mb-4 flex-wrap">
+            <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Buscar documentos..." className="pl-9 bg-card border-border h-9" />
+              <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Buscar documentos..." className="pl-9 bg-card border-border h-9" />
             </div>
+            {categories.slice(0, 5).map(cat => (
+              <Button key={cat} variant={categoryFilter === cat ? 'default' : 'outline'} size="sm" className="text-[10px]" onClick={() => setCategoryFilter(categoryFilter === cat ? null : cat)}>
+                {cat}
+              </Button>
+            ))}
           </motion.div>
 
           <motion.div variants={fadeUp} className="bg-card rounded-lg border border-border shadow-card overflow-hidden">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-4 py-3">Nome</th>
-                  <th className="text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-4 py-3">Processo</th>
-                  <th className="text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-4 py-3">Tags</th>
-                  <th className="text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-4 py-3">Tamanho</th>
-                  <th className="text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-4 py-3">Data</th>
-                </tr>
-              </thead>
-              <tbody>
-                {mockDocs.map((doc) => (
-                  <tr key={doc.id} className="border-b border-border last:border-0 hover:bg-secondary/50 transition-colors cursor-pointer">
-                    <td className="px-4 py-3 flex items-center gap-2">
-                      <FolderOpen className="h-4 w-4 text-primary shrink-0" />
-                      <span className="text-sm text-foreground">{doc.name}</span>
-                    </td>
-                    <td className="px-4 py-3 text-xs font-mono text-muted-foreground tabular-nums">{doc.case}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex gap-1">
-                        {doc.tags.map(tag => (
-                          <span key={tag} className="text-[10px] bg-secondary text-muted-foreground rounded px-1.5 py-0.5">{tag}</span>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-xs text-muted-foreground tabular-nums">{doc.size}</td>
-                    <td className="px-4 py-3 text-xs text-muted-foreground tabular-nums">{new Date(doc.date).toLocaleDateString('pt-BR')}</td>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-4 py-3">Documento</th>
+                    <th className="text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-4 py-3">Tipo</th>
+                    <th className="text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-4 py-3">Cliente</th>
+                    <th className="text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-4 py-3">Processo</th>
+                    <th className="text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-4 py-3">Responsável</th>
+                    <th className="text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-4 py-3">Status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {filtered.map((d) => (
+                    <tr key={d.id} className="border-b border-border last:border-0 hover:bg-secondary/50 transition-colors cursor-pointer">
+                      <td className="px-4 py-2.5 flex items-center gap-2">
+                        <FolderOpen className="h-4 w-4 text-primary shrink-0" />
+                        <span className="text-xs font-medium text-foreground">{d.nome_documento}</span>
+                      </td>
+                      <td className="px-4 py-2.5 text-xs text-muted-foreground">{d.tipo_documento}</td>
+                      <td className="px-4 py-2.5 text-xs text-foreground">{d.cliente_nome?.split(' ').slice(0, 2).join(' ') || '-'}</td>
+                      <td className="px-4 py-2.5 text-[10px] font-mono text-muted-foreground tabular-nums">{d.processo_cnj || '-'}</td>
+                      <td className="px-4 py-2.5 text-xs text-muted-foreground">{d.responsavel}</td>
+                      <td className="px-4 py-2.5"><StatusBadge status={d.status_documento} /></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </motion.div>
         </motion.div>
       </div>
