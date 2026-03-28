@@ -229,10 +229,10 @@ export const mockActusMovements: ActusMovement[] = mockActusProcesses.slice(0, 2
     const tmpl = movementTemplates[(pi + mi) % movementTemplates.length];
     const day = 28 - pi - mi;
     return {
-      id: \`mv-\${pi}-\${mi}\`,
+      id: `mv-${pi}-${mi}`,
       processo_id: p.id,
       processo_cnj: p.numero_cnj,
-      data_movimentacao: \`2026-03-\${String(Math.max(1, day)).padStart(2, '0')}\`,
+      data_movimentacao: `2026-03-${String(Math.max(1, day)).padStart(2, '0')}`,
       resumo: tmpl.resumo,
       classificacao: tmpl.classificacao,
       responsavel: p.responsavel_principal,
