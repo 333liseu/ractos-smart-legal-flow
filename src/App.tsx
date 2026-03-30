@@ -19,6 +19,7 @@ import DocumentsPage from "./pages/DocumentsPage";
 import DocGeneratorPage from "./pages/DocGeneratorPage";
 import FinancialPage from "./pages/FinancialPage";
 import WorkspacePage from "./pages/WorkspacePage";
+import WorkspaceCasePage from "./pages/WorkspaceCasePage";
 import ActusZapPage from "./pages/ActusZapPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import SettingsPage from "./pages/SettingsPage";
