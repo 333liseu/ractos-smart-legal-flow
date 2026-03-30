@@ -19,6 +19,7 @@ import DocumentsPage from "./pages/DocumentsPage";
 import DocGeneratorPage from "./pages/DocGeneratorPage";
 import FinancialPage from "./pages/FinancialPage";
 import WorkspacePage from "./pages/WorkspacePage";
+import WorkspaceCasePage from "./pages/WorkspaceCasePage";
 import ActusZapPage from "./pages/ActusZapPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import SettingsPage from "./pages/SettingsPage";
@@ -49,6 +50,7 @@ const App = () => (
           <Route path="/doc-generator" element={<DocGeneratorPage />} />
           <Route path="/financial" element={<FinancialPage />} />
           <Route path="/workspace" element={<WorkspacePage />} />
+          <Route path="/workspace/:id" element={<WorkspaceCasePage />} />
           <Route path="/actus-zap" element={<ActusZapPage />} />
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
