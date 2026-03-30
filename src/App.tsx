@@ -50,6 +50,7 @@ const App = () => (
           <Route path="/doc-generator" element={<DocGeneratorPage />} />
           <Route path="/financial" element={<FinancialPage />} />
           <Route path="/workspace" element={<WorkspacePage />} />
+          <Route path="/workspace/:id" element={<WorkspaceCasePage />} />
           <Route path="/actus-zap" element={<ActusZapPage />} />
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
