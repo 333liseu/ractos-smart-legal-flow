@@ -14,7 +14,104 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      cliente_documentos: {
+        Row: {
+          caminho_storage: string
+          categoria: string | null
+          cliente_id: string
+          created_at: string
+          id: string
+          nome_arquivo: string
+          url_arquivo: string | null
+        }
+        Insert: {
+          caminho_storage: string
+          categoria?: string | null
+          cliente_id: string
+          created_at?: string
+          id?: string
+          nome_arquivo: string
+          url_arquivo?: string | null
+        }
+        Update: {
+          caminho_storage?: string
+          categoria?: string | null
+          cliente_id?: string
+          created_at?: string
+          id?: string
+          nome_arquivo?: string
+          url_arquivo?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cliente_documentos_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clientes: {
+        Row: {
+          celular: string | null
+          cep: string | null
+          cidade: string | null
+          cpf_cnpj: string | null
+          created_at: string
+          email: string | null
+          endereco: string | null
+          estado: string | null
+          id: string
+          nome_razao_social: string
+          observacoes: string | null
+          responsavel_interno: string | null
+          status: string | null
+          telefone: string | null
+          tipo_contrato: string | null
+          tipo_pessoa: string | null
+          updated_at: string
+        }
+        Insert: {
+          celular?: string | null
+          cep?: string | null
+          cidade?: string | null
+          cpf_cnpj?: string | null
+          created_at?: string
+          email?: string | null
+          endereco?: string | null
+          estado?: string | null
+          id?: string
+          nome_razao_social: string
+          observacoes?: string | null
+          responsavel_interno?: string | null
+          status?: string | null
+          telefone?: string | null
+          tipo_contrato?: string | null
+          tipo_pessoa?: string | null
+          updated_at?: string
+        }
+        Update: {
+          celular?: string | null
+          cep?: string | null
+          cidade?: string | null
+          cpf_cnpj?: string | null
+          created_at?: string
+          email?: string | null
+          endereco?: string | null
+          estado?: string | null
+          id?: string
+          nome_razao_social?: string
+          observacoes?: string | null
+          responsavel_interno?: string | null
+          status?: string | null
+          telefone?: string | null
+          tipo_contrato?: string | null
+          tipo_pessoa?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
