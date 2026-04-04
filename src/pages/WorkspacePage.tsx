@@ -56,6 +56,25 @@ function getGreeting() {
 export default function WorkspacePage() {
   const [sidebarSearch, setSidebarSearch] = useState("");
   const [mainInput, setMainInput] = useState("");
+  const [caseModalOpen, setCaseModalOpen] = useState(false);
+  const [processModalOpen, setProcessModalOpen] = useState(false);
+  const { data: dbCases } = useWorkspaceCases();
+
+  // Merge DB cases with mock fallback
+  const allCases = [
+    ...(dbCases || []).map(c => ({
+      id: c.id,
+      nome: c.nome,
+      cliente: c.cliente || "",
+      processo_cnj: null as string | null,
+      resumo: c.relato || "",
+      status: (c.status || "Ativo") as "Ativo" | "Arquivado",
+      arquivos_count: 0,
+      conversas_count: 0,
+      ultima_interacao: new Date(c.updated_at).toLocaleDateString("pt-BR"),
+    })),
+    ...mockCases,
+  ];
 
   const filteredCases = mockCases.filter(c =>
     c.nome.toLowerCase().includes(sidebarSearch.toLowerCase()) ||
