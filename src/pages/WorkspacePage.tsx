@@ -92,14 +92,12 @@ export default function WorkspacePage() {
               <Plus className="h-4 w-4" /> Nova conversa
             </Button>
             <div className="flex gap-1.5">
-              <Button variant="outline" size="sm" className="flex-1 gap-1.5 text-xs h-8 justify-start">
+              <Button variant="outline" size="sm" className="flex-1 gap-1.5 text-xs h-8 justify-start" onClick={() => setCaseModalOpen(true)}>
                 <FolderOpen className="h-3.5 w-3.5" /> Novo caso
               </Button>
-              <Link to="/cases/new">
-                <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8">
-                  <Scale className="h-3.5 w-3.5" /> Novo processo
-                </Button>
-              </Link>
+              <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8" onClick={() => setProcessModalOpen(true)}>
+                <Scale className="h-3.5 w-3.5" /> Novo processo
+              </Button>
             </div>
           </div>
 
