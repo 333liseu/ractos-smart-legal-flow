@@ -76,7 +76,7 @@ export default function WorkspacePage() {
     ...mockCases,
   ];
 
-  const filteredCases = mockCases.filter(c =>
+  const filteredCases = allCases.filter(c =>
     c.nome.toLowerCase().includes(sidebarSearch.toLowerCase()) ||
     c.cliente.toLowerCase().includes(sidebarSearch.toLowerCase())
   );
