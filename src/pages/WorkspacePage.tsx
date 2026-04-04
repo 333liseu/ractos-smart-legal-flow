@@ -10,6 +10,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { fadeUp } from '@/lib/animations';
 import { Link } from "react-router-dom";
+import { NewCaseModal } from "@/components/workspace/NewCaseModal";
+import { NewProcessModal } from "@/components/workspace/NewProcessModal";
+import { useWorkspaceCases } from "@/hooks/use-workspace";
 
 interface WorkspaceCase {
   id: string;
