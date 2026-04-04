@@ -10,6 +10,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { fadeUp } from '@/lib/animations';
 import { Link } from "react-router-dom";
+import { NewCaseModal } from "@/components/workspace/NewCaseModal";
+import { NewProcessModal } from "@/components/workspace/NewProcessModal";
+import { useWorkspaceCases } from "@/hooks/use-workspace";
 
 interface WorkspaceCase {
   id: string;
@@ -53,8 +56,27 @@ function getGreeting() {
 export default function WorkspacePage() {
   const [sidebarSearch, setSidebarSearch] = useState("");
   const [mainInput, setMainInput] = useState("");
+  const [caseModalOpen, setCaseModalOpen] = useState(false);
+  const [processModalOpen, setProcessModalOpen] = useState(false);
+  const { data: dbCases } = useWorkspaceCases();
 
-  const filteredCases = mockCases.filter(c =>
+  // Merge DB cases with mock fallback
+  const allCases = [
+    ...(dbCases || []).map(c => ({
+      id: c.id,
+      nome: c.nome,
+      cliente: c.cliente || "",
+      processo_cnj: null as string | null,
+      resumo: c.relato || "",
+      status: (c.status || "Ativo") as "Ativo" | "Arquivado",
+      arquivos_count: 0,
+      conversas_count: 0,
+      ultima_interacao: new Date(c.updated_at).toLocaleDateString("pt-BR"),
+    })),
+    ...mockCases,
+  ];
+
+  const filteredCases = allCases.filter(c =>
     c.nome.toLowerCase().includes(sidebarSearch.toLowerCase()) ||
     c.cliente.toLowerCase().includes(sidebarSearch.toLowerCase())
   );
@@ -70,14 +92,12 @@ export default function WorkspacePage() {
               <Plus className="h-4 w-4" /> Nova conversa
             </Button>
             <div className="flex gap-1.5">
-              <Button variant="outline" size="sm" className="flex-1 gap-1.5 text-xs h-8 justify-start">
+              <Button variant="outline" size="sm" className="flex-1 gap-1.5 text-xs h-8 justify-start" onClick={() => setCaseModalOpen(true)}>
                 <FolderOpen className="h-3.5 w-3.5" /> Novo caso
               </Button>
-              <Link to="/cases/new">
-                <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8">
-                  <Scale className="h-3.5 w-3.5" /> Novo processo
-                </Button>
-              </Link>
+              <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8" onClick={() => setProcessModalOpen(true)}>
+                <Scale className="h-3.5 w-3.5" /> Novo processo
+              </Button>
             </div>
           </div>
 
@@ -221,6 +241,9 @@ export default function WorkspacePage() {
           </motion.div>
         </div>
       </div>
+
+      <NewCaseModal open={caseModalOpen} onOpenChange={setCaseModalOpen} />
+      <NewProcessModal open={processModalOpen} onOpenChange={setProcessModalOpen} />
     </AppLayout>
   );
 }

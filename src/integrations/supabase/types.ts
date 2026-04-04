@@ -112,6 +112,293 @@ export type Database = {
         }
         Relationships: []
       }
+      workspace_cases: {
+        Row: {
+          area_juridica: string | null
+          cliente: string | null
+          created_at: string
+          id: string
+          nome: string
+          relato: string | null
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          area_juridica?: string | null
+          cliente?: string | null
+          created_at?: string
+          id?: string
+          nome: string
+          relato?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          area_juridica?: string | null
+          cliente?: string | null
+          created_at?: string
+          id?: string
+          nome?: string
+          relato?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      workspace_conversations: {
+        Row: {
+          agente: string
+          case_id: string | null
+          created_at: string
+          id: string
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          agente?: string
+          case_id?: string | null
+          created_at?: string
+          id?: string
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          agente?: string
+          case_id?: string | null
+          created_at?: string
+          id?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_conversations_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "workspace_cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workspace_files: {
+        Row: {
+          caminho_storage: string
+          case_id: string | null
+          categoria: string | null
+          created_at: string
+          id: string
+          nome_arquivo: string
+          process_id: string | null
+          url_arquivo: string | null
+        }
+        Insert: {
+          caminho_storage: string
+          case_id?: string | null
+          categoria?: string | null
+          created_at?: string
+          id?: string
+          nome_arquivo: string
+          process_id?: string | null
+          url_arquivo?: string | null
+        }
+        Update: {
+          caminho_storage?: string
+          case_id?: string | null
+          categoria?: string | null
+          created_at?: string
+          id?: string
+          nome_arquivo?: string
+          process_id?: string | null
+          url_arquivo?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_files_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "workspace_cases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workspace_files_process_id_fkey"
+            columns: ["process_id"]
+            isOneToOne: false
+            referencedRelation: "workspace_processes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workspace_memory: {
+        Row: {
+          case_id: string
+          chave: string
+          created_at: string
+          id: string
+          tipo: string | null
+          updated_at: string
+          valor: string
+        }
+        Insert: {
+          case_id: string
+          chave: string
+          created_at?: string
+          id?: string
+          tipo?: string | null
+          updated_at?: string
+          valor: string
+        }
+        Update: {
+          case_id?: string
+          chave?: string
+          created_at?: string
+          id?: string
+          tipo?: string | null
+          updated_at?: string
+          valor?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_memory_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "workspace_cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workspace_messages: {
+        Row: {
+          agente: string | null
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          role: string
+        }
+        Insert: {
+          agente?: string | null
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          role?: string
+        }
+        Update: {
+          agente?: string | null
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "workspace_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workspace_outputs: {
+        Row: {
+          case_id: string | null
+          conteudo: string
+          conversation_id: string | null
+          created_at: string
+          id: string
+          tipo: string
+          titulo: string
+        }
+        Insert: {
+          case_id?: string | null
+          conteudo: string
+          conversation_id?: string | null
+          created_at?: string
+          id?: string
+          tipo: string
+          titulo: string
+        }
+        Update: {
+          case_id?: string | null
+          conteudo?: string
+          conversation_id?: string | null
+          created_at?: string
+          id?: string
+          tipo?: string
+          titulo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_outputs_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "workspace_cases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workspace_outputs_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "workspace_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workspace_processes: {
+        Row: {
+          case_id: string | null
+          classe_acao: string | null
+          cliente: string | null
+          created_at: string
+          id: string
+          nome: string | null
+          numero_cnj: string | null
+          orgao_julgador: string | null
+          relato: string | null
+          status: string | null
+          tribunal: string | null
+          updated_at: string
+        }
+        Insert: {
+          case_id?: string | null
+          classe_acao?: string | null
+          cliente?: string | null
+          created_at?: string
+          id?: string
+          nome?: string | null
+          numero_cnj?: string | null
+          orgao_julgador?: string | null
+          relato?: string | null
+          status?: string | null
+          tribunal?: string | null
+          updated_at?: string
+        }
+        Update: {
+          case_id?: string | null
+          classe_acao?: string | null
+          cliente?: string | null
+          created_at?: string
+          id?: string
+          nome?: string | null
+          numero_cnj?: string | null
+          orgao_julgador?: string | null
+          relato?: string | null
+          status?: string | null
+          tribunal?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_processes_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "workspace_cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
