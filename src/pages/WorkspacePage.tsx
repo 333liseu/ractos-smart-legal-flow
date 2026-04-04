@@ -241,6 +241,9 @@ export default function WorkspacePage() {
           </motion.div>
         </div>
       </div>
+
+      <NewCaseModal open={caseModalOpen} onOpenChange={setCaseModalOpen} />
+      <NewProcessModal open={processModalOpen} onOpenChange={setProcessModalOpen} />
     </AppLayout>
   );
 }
