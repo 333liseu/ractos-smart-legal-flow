@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 interface NewProcessModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onCreated?: (processId: string) => void;
 }
 
 const tribunais = [
@@ -26,7 +27,7 @@ const tribunais = [
 
 const statusList = ["Em andamento", "Suspenso", "Arquivado", "Recurso pendente", "Aguardando sentença"];
 
-export function NewProcessModal({ open, onOpenChange }: NewProcessModalProps) {
+export function NewProcessModal({ open, onOpenChange, onCreated }: NewProcessModalProps) {
   const navigate = useNavigate();
   const fileRef = useRef<HTMLInputElement>(null);
   const createCase = useCreateWorkspaceCase();
@@ -99,7 +100,11 @@ export function NewProcessModal({ open, onOpenChange }: NewProcessModalProps) {
 
       resetForm();
       onOpenChange(false);
-      navigate(`/workspace/${newCase.id}`);
+      if (onCreated) {
+        onCreated(newProcess.id);
+      } else {
+        navigate(`/workspace/${newCase.id}`);
+      }
     } catch {
       // errors handled by hooks
     } finally {
