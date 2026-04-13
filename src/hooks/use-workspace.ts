@@ -168,16 +168,14 @@ export function useMoveConversation() {
       fromProcessId?: string | null;
     }) => {
       // Update the conversation
-      const updatePayload: Record<string, unknown> = {
-        context_type: payload.toContextType,
-        case_id: payload.toCaseId || null,
-        process_id: payload.toProcessId || null,
-        moved_at: new Date().toISOString(),
-      };
-
       const { error: updateError } = await supabase
         .from("workspace_conversations")
-        .update(updatePayload)
+        .update({
+          context_type: payload.toContextType,
+          case_id: payload.toCaseId || null,
+          process_id: payload.toProcessId || null,
+          moved_at: new Date().toISOString(),
+        })
         .eq("id", payload.conversationId);
       if (updateError) throw updateError;
 
