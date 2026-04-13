@@ -58,9 +58,21 @@ function getGreeting() {
 export default function WorkspacePage() {
   const [sidebarSearch, setSidebarSearch] = useState("");
   const [mainInput, setMainInput] = useState("");
-  const [caseModalOpen, setCaseModalOpen] = useState(false);
-  const [processModalOpen, setProcessModalOpen] = useState(false);
-  const { data: dbCases } = useWorkspaceCases();
+  const { data: dbConversations } = useAllWorkspaceConversations();
+
+  // Merge DB conversations with mock fallback
+  const allConversations = [
+    ...(dbConversations || []).map(c => ({
+      id: c.id,
+      titulo: c.titulo,
+      agente: c.agente,
+      data: new Date(c.updated_at).toLocaleDateString("pt-BR"),
+      context_type: c.context_type || "unassigned",
+      case_id: c.case_id,
+      process_id: c.process_id,
+    })),
+    ...mockRecentConversations,
+  ];
 
   // Merge DB cases with mock fallback
   const allCases = [
