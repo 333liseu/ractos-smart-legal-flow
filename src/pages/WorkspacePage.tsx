@@ -42,10 +42,10 @@ const quickSuggestions = [
   { icon: Brain, label: "Estruture uma estratégia processual", description: "Análise estratégica completa" },
 ];
 
-const recentConversations = [
-  { id: 'c1', titulo: 'Análise dos autos — Recurso Trabalhista', agente: 'Análise', data: '28/03/2025' },
-  { id: 'c2', titulo: 'Minuta de contestação — Auto de infração', agente: 'Redação', data: '27/03/2025' },
-  { id: 'c3', titulo: 'Jurisprudência — Dano moral trabalhista', agente: 'Pesquisa', data: '26/03/2025' },
+const mockRecentConversations = [
+  { id: 'c1', titulo: 'Análise dos autos — Recurso Trabalhista', agente: 'Análise', data: '28/03/2025', context_type: 'case', case_id: '1', process_id: null },
+  { id: 'c2', titulo: 'Minuta de contestação — Auto de infração', agente: 'Redação', data: '27/03/2025', context_type: 'unassigned', case_id: null, process_id: null },
+  { id: 'c3', titulo: 'Jurisprudência — Dano moral trabalhista', agente: 'Pesquisa', data: '26/03/2025', context_type: 'process', case_id: null, process_id: 'p1' },
 ];
 
 function getGreeting() {
