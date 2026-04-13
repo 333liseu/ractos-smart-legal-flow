@@ -3,8 +3,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import {
   Plus, Search, Sparkles, Send, Paperclip, Mic, MessageSquare,
-  FolderOpen, ChevronRight, Clock, BookOpen, Scale, FileSearch,
-  PenTool, Brain, Crosshair, ShieldCheck, User
+  FolderOpen, BookOpen, Scale, FileSearch, PenTool, Brain, User
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -58,21 +57,10 @@ function getGreeting() {
 export default function WorkspacePage() {
   const [sidebarSearch, setSidebarSearch] = useState("");
   const [mainInput, setMainInput] = useState("");
+  const [caseModalOpen, setCaseModalOpen] = useState(false);
+  const [processModalOpen, setProcessModalOpen] = useState(false);
+  const { data: dbCases } = useWorkspaceCases();
   const { data: dbConversations } = useAllWorkspaceConversations();
-
-  // Merge DB conversations with mock fallback
-  const allConversations = [
-    ...(dbConversations || []).map(c => ({
-      id: c.id,
-      titulo: c.titulo,
-      agente: c.agente,
-      data: new Date(c.updated_at).toLocaleDateString("pt-BR"),
-      context_type: c.context_type || "unassigned",
-      case_id: c.case_id,
-      process_id: c.process_id,
-    })),
-    ...mockRecentConversations,
-  ];
 
   // Merge DB cases with mock fallback
   const allCases = [
@@ -90,9 +78,27 @@ export default function WorkspacePage() {
     ...mockCases,
   ];
 
+  // Merge DB conversations with mock fallback
+  const allConversations = [
+    ...(dbConversations || []).map(c => ({
+      id: c.id,
+      titulo: c.titulo,
+      agente: c.agente,
+      data: new Date(c.updated_at).toLocaleDateString("pt-BR"),
+      context_type: (c as any).context_type || "unassigned",
+      case_id: c.case_id || null,
+      process_id: (c as any).process_id || null,
+    })),
+    ...mockRecentConversations,
+  ];
+
   const filteredCases = allCases.filter(c =>
     c.nome.toLowerCase().includes(sidebarSearch.toLowerCase()) ||
     c.cliente.toLowerCase().includes(sidebarSearch.toLowerCase())
+  );
+
+  const filteredConversations = allConversations.filter(c =>
+    c.titulo.toLowerCase().includes(sidebarSearch.toLowerCase())
   );
 
   return (
@@ -146,14 +152,21 @@ export default function WorkspacePage() {
 
             <div className="mt-4">
               <p className="text-[10px] uppercase tracking-widest text-muted-foreground/60 font-semibold px-2 py-1.5">Últimas Conversas</p>
-              {recentConversations.map((conv) => (
+              {filteredConversations.map((conv) => (
                 <div key={conv.id} className="rounded-md px-2.5 py-2 hover:bg-secondary/80 cursor-pointer transition-colors group">
                   <div className="flex items-center gap-1.5">
                     <MessageSquare className="h-3 w-3 text-muted-foreground shrink-0" />
-                    <p className="text-xs text-foreground truncate">{conv.titulo}</p>
+                    <p className="text-xs text-foreground truncate flex-1">{conv.titulo}</p>
+                    <ConversationContextMenu
+                      conversationId={conv.id}
+                      contextType={conv.context_type}
+                      caseId={conv.case_id}
+                      processId={conv.process_id}
+                    />
                   </div>
                   <div className="flex items-center gap-2 mt-0.5 ml-[18px]">
                     <span className="text-[10px] px-1.5 py-0.5 rounded bg-ai/10 text-ai font-medium">{conv.agente}</span>
+                    <ConversationContextBadge contextType={conv.context_type} />
                     <span className="text-[10px] text-muted-foreground tabular-nums">{conv.data}</span>
                   </div>
                 </div>
