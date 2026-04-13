@@ -47,6 +47,8 @@ export default function WorkspaceCasePage() {
   const [activeAgent, setActiveAgent] = useState('analise');
   const [input, setInput] = useState("");
   const [showFiles, setShowFiles] = useState(false);
+  const [moveDialogOpen, setMoveDialogOpen] = useState(false);
+  const [selectedConvId, setSelectedConvId] = useState<string | null>(null);
 
   const caseData = {
     nome: 'Recurso Trabalhista — João da Silva',
