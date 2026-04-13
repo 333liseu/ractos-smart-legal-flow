@@ -124,6 +124,15 @@ export default function WorkspaceCasePage() {
                 {agent.label}
               </button>
             ))}
+            <div className="ml-auto shrink-0">
+              <Button
+                variant="ghost" size="sm"
+                className="h-7 text-[11px] gap-1.5 text-muted-foreground hover:text-foreground"
+                onClick={() => setMoveDialogOpen(true)}
+              >
+                <ArrowRightLeft className="h-3 w-3" /> Mover
+              </Button>
+            </div>
           </div>
 
           {/* Chat Messages Area */}
