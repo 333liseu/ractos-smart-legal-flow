@@ -3,11 +3,14 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import {
   Send, Paperclip, Mic, MessageSquare, FileText, ChevronLeft,
-  FolderOpen, Sparkles, X, BookOpen, User, Bot
+  FolderOpen, Sparkles, X, BookOpen, User, Bot, ArrowRightLeft
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { fadeUp } from '@/lib/animations';
 import { Link, useParams } from "react-router-dom";
+import { ConversationContextMenu } from "@/components/workspace/ConversationContextMenu";
+import { ConversationContextBadge } from "@/components/workspace/ConversationContextBadge";
+import { MoveConversationDialog } from "@/components/workspace/MoveConversationDialog";
 
 const agents = [
   { id: 'analise', label: 'Análise', color: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
@@ -44,6 +47,8 @@ export default function WorkspaceCasePage() {
   const [activeAgent, setActiveAgent] = useState('analise');
   const [input, setInput] = useState("");
   const [showFiles, setShowFiles] = useState(false);
+  const [moveDialogOpen, setMoveDialogOpen] = useState(false);
+  const [selectedConvId, setSelectedConvId] = useState<string | null>(null);
 
   const caseData = {
     nome: 'Recurso Trabalhista — João da Silva',
@@ -84,7 +89,12 @@ export default function WorkspaceCasePage() {
               <div key={conv.id} className="rounded-md px-2.5 py-2 hover:bg-secondary/80 cursor-pointer transition-colors group">
                 <div className="flex items-center gap-1.5">
                   <MessageSquare className="h-3 w-3 text-muted-foreground shrink-0" />
-                  <p className="text-xs text-foreground truncate">{conv.titulo}</p>
+                  <p className="text-xs text-foreground truncate flex-1">{conv.titulo}</p>
+                  <ConversationContextMenu
+                    conversationId={conv.id}
+                    contextType="case"
+                    caseId={id}
+                  />
                 </div>
                 <div className="flex items-center gap-2 mt-0.5 ml-[18px]">
                   <span className="text-[10px] px-1.5 py-0.5 rounded bg-ai/10 text-ai font-medium">{conv.agente}</span>
@@ -114,6 +124,15 @@ export default function WorkspaceCasePage() {
                 {agent.label}
               </button>
             ))}
+            <div className="ml-auto shrink-0">
+              <Button
+                variant="ghost" size="sm"
+                className="h-7 text-[11px] gap-1.5 text-muted-foreground hover:text-foreground"
+                onClick={() => setMoveDialogOpen(true)}
+              >
+                <ArrowRightLeft className="h-3 w-3" /> Mover
+              </Button>
+            </div>
           </div>
 
           {/* Chat Messages Area */}
@@ -210,6 +229,25 @@ export default function WorkspaceCasePage() {
           </div>
         )}
       </div>
+
+      {selectedConvId && (
+        <MoveConversationDialog
+          open={moveDialogOpen}
+          onOpenChange={setMoveDialogOpen}
+          conversationId={selectedConvId}
+          currentContextType="case"
+          currentCaseId={id}
+        />
+      )}
+      {!selectedConvId && (
+        <MoveConversationDialog
+          open={moveDialogOpen}
+          onOpenChange={setMoveDialogOpen}
+          conversationId={mockConversations[0]?.id || ""}
+          currentContextType="case"
+          currentCaseId={id}
+        />
+      )}
     </AppLayout>
   );
 }

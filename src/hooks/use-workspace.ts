@@ -59,6 +59,20 @@ export function useCreateWorkspaceCase() {
 }
 
 // ─── Process Service ───
+export function useWorkspaceProcesses() {
+  return useQuery({
+    queryKey: ["workspace-processes"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("workspace_processes")
+        .select("*")
+        .order("updated_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
 export function useCreateWorkspaceProcess() {
   const qc = useQueryClient();
   return useMutation({
@@ -82,6 +96,7 @@ export function useCreateWorkspaceProcess() {
       return data;
     },
     onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["workspace-processes"] });
       qc.invalidateQueries({ queryKey: ["workspace-cases"] });
       toast.success("Processo criado com sucesso");
     },
@@ -106,6 +121,20 @@ export function useWorkspaceConversations(caseId: string | undefined) {
   });
 }
 
+export function useAllWorkspaceConversations() {
+  return useQuery({
+    queryKey: ["workspace-conversations-all"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("workspace_conversations")
+        .select("*")
+        .order("updated_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
 export function useCreateConversation() {
   const qc = useQueryClient();
   return useMutation({
@@ -120,7 +149,60 @@ export function useCreateConversation() {
     },
     onSuccess: (data) => {
       qc.invalidateQueries({ queryKey: ["workspace-conversations", data.case_id] });
+      qc.invalidateQueries({ queryKey: ["workspace-conversations-all"] });
     },
+  });
+}
+
+// ─── Move Conversation Service ───
+export function useMoveConversation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: {
+      conversationId: string;
+      toContextType: "case" | "process" | "unassigned";
+      toCaseId?: string | null;
+      toProcessId?: string | null;
+      fromContextType?: string;
+      fromCaseId?: string | null;
+      fromProcessId?: string | null;
+    }) => {
+      // Update the conversation
+      const { error: updateError } = await supabase
+        .from("workspace_conversations")
+        .update({
+          context_type: payload.toContextType,
+          case_id: payload.toCaseId || null,
+          process_id: payload.toProcessId || null,
+          moved_at: new Date().toISOString(),
+        })
+        .eq("id", payload.conversationId);
+      if (updateError) throw updateError;
+
+      // Log the move in audit table
+      const { error: auditError } = await supabase
+        .from("workspace_conversation_moves")
+        .insert({
+          conversation_id: payload.conversationId,
+          from_context_type: payload.fromContextType || "unassigned",
+          from_case_id: payload.fromCaseId || null,
+          from_process_id: payload.fromProcessId || null,
+          to_context_type: payload.toContextType,
+          to_case_id: payload.toCaseId || null,
+          to_process_id: payload.toProcessId || null,
+        });
+      if (auditError) console.error("Audit log failed:", auditError);
+
+      return payload;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["workspace-conversations"] });
+      qc.invalidateQueries({ queryKey: ["workspace-conversations-all"] });
+      qc.invalidateQueries({ queryKey: ["workspace-cases"] });
+      qc.invalidateQueries({ queryKey: ["workspace-processes"] });
+      toast.success("Conversa movida com sucesso");
+    },
+    onError: (err: Error) => toast.error(`Erro ao mover conversa: ${err.message}`),
   });
 }
 

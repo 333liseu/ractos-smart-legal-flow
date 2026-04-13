@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 interface NewCaseModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onCreated?: (caseId: string) => void;
 }
 
 const areasJuridicas = [
@@ -21,7 +22,7 @@ const areasJuridicas = [
   "Empresarial", "Ambiental", "Família", "Consumidor", "Previdenciário",
 ];
 
-export function NewCaseModal({ open, onOpenChange }: NewCaseModalProps) {
+export function NewCaseModal({ open, onOpenChange, onCreated }: NewCaseModalProps) {
   const navigate = useNavigate();
   const fileRef = useRef<HTMLInputElement>(null);
   const createCase = useCreateWorkspaceCase();
@@ -64,7 +65,11 @@ export function NewCaseModal({ open, onOpenChange }: NewCaseModalProps) {
 
       resetForm();
       onOpenChange(false);
-      navigate(`/workspace/${newCase.id}`);
+      if (onCreated) {
+        onCreated(newCase.id);
+      } else {
+        navigate(`/workspace/${newCase.id}`);
+      }
     } catch {
       // errors handled by hooks
     } finally {
