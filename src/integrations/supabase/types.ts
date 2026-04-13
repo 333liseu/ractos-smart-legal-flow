@@ -145,28 +145,82 @@ export type Database = {
         }
         Relationships: []
       }
+      workspace_conversation_moves: {
+        Row: {
+          conversation_id: string
+          from_case_id: string | null
+          from_context_type: string | null
+          from_process_id: string | null
+          id: string
+          moved_at: string
+          moved_by: string | null
+          reason: string | null
+          to_case_id: string | null
+          to_context_type: string
+          to_process_id: string | null
+        }
+        Insert: {
+          conversation_id: string
+          from_case_id?: string | null
+          from_context_type?: string | null
+          from_process_id?: string | null
+          id?: string
+          moved_at?: string
+          moved_by?: string | null
+          reason?: string | null
+          to_case_id?: string | null
+          to_context_type: string
+          to_process_id?: string | null
+        }
+        Update: {
+          conversation_id?: string
+          from_case_id?: string | null
+          from_context_type?: string | null
+          from_process_id?: string | null
+          id?: string
+          moved_at?: string
+          moved_by?: string | null
+          reason?: string | null
+          to_case_id?: string | null
+          to_context_type?: string
+          to_process_id?: string | null
+        }
+        Relationships: []
+      }
       workspace_conversations: {
         Row: {
           agente: string
           case_id: string | null
+          context_type: string
           created_at: string
           id: string
+          moved_at: string | null
+          moved_by: string | null
+          process_id: string | null
           titulo: string
           updated_at: string
         }
         Insert: {
           agente?: string
           case_id?: string | null
+          context_type?: string
           created_at?: string
           id?: string
+          moved_at?: string | null
+          moved_by?: string | null
+          process_id?: string | null
           titulo: string
           updated_at?: string
         }
         Update: {
           agente?: string
           case_id?: string | null
+          context_type?: string
           created_at?: string
           id?: string
+          moved_at?: string | null
+          moved_by?: string | null
+          process_id?: string | null
           titulo?: string
           updated_at?: string
         }
