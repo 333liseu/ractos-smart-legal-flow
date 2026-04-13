@@ -229,6 +229,25 @@ export default function WorkspaceCasePage() {
           </div>
         )}
       </div>
+
+      {selectedConvId && (
+        <MoveConversationDialog
+          open={moveDialogOpen}
+          onOpenChange={setMoveDialogOpen}
+          conversationId={selectedConvId}
+          currentContextType="case"
+          currentCaseId={id}
+        />
+      )}
+      {!selectedConvId && (
+        <MoveConversationDialog
+          open={moveDialogOpen}
+          onOpenChange={setMoveDialogOpen}
+          conversationId={mockConversations[0]?.id || ""}
+          currentContextType="case"
+          currentCaseId={id}
+        />
+      )}
     </AppLayout>
   );
 }
