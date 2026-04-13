@@ -78,7 +78,7 @@ export function NewProcessModal({ open, onOpenChange, onCreated }: NewProcessMod
         relato: relato.trim() || undefined,
       });
 
-      await createProcess.mutateAsync({
+      const newProcess = await createProcess.mutateAsync({
         case_id: newCase.id,
         numero_cnj: naoDistribuido ? null : cnj.trim() || undefined,
         nome: nome.trim(),

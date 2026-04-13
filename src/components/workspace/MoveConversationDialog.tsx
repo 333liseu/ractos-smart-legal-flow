@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   FolderOpen, Scale, Search, Loader2, Plus, Check,
 } from "lucide-react";
-import { useWorkspaceCases, useWorkspaceProcesses, useMoveConversation, useCreateWorkspaceCase, useCreateWorkspaceProcess } from "@/hooks/use-workspace";
+import { useWorkspaceCases, useWorkspaceProcesses, useMoveConversation } from "@/hooks/use-workspace";
 import { NewCaseModal } from "./NewCaseModal";
 import { NewProcessModal } from "./NewProcessModal";
 
