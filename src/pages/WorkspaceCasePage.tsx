@@ -3,11 +3,14 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import {
   Send, Paperclip, Mic, MessageSquare, FileText, ChevronLeft,
-  FolderOpen, Sparkles, X, BookOpen, User, Bot
+  FolderOpen, Sparkles, X, BookOpen, User, Bot, ArrowRightLeft
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { fadeUp } from '@/lib/animations';
 import { Link, useParams } from "react-router-dom";
+import { ConversationContextMenu } from "@/components/workspace/ConversationContextMenu";
+import { ConversationContextBadge } from "@/components/workspace/ConversationContextBadge";
+import { MoveConversationDialog } from "@/components/workspace/MoveConversationDialog";
 
 const agents = [
   { id: 'analise', label: 'Análise', color: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
