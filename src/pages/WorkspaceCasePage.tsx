@@ -89,7 +89,12 @@ export default function WorkspaceCasePage() {
               <div key={conv.id} className="rounded-md px-2.5 py-2 hover:bg-secondary/80 cursor-pointer transition-colors group">
                 <div className="flex items-center gap-1.5">
                   <MessageSquare className="h-3 w-3 text-muted-foreground shrink-0" />
-                  <p className="text-xs text-foreground truncate">{conv.titulo}</p>
+                  <p className="text-xs text-foreground truncate flex-1">{conv.titulo}</p>
+                  <ConversationContextMenu
+                    conversationId={conv.id}
+                    contextType="case"
+                    caseId={id}
+                  />
                 </div>
                 <div className="flex items-center gap-2 mt-0.5 ml-[18px]">
                   <span className="text-[10px] px-1.5 py-0.5 rounded bg-ai/10 text-ai font-medium">{conv.agente}</span>
