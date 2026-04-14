@@ -1,286 +1,330 @@
 import { AppLayout } from "@/components/AppLayout";
-import { Sparkles, FileText, Plus, Download, Eye, Save, ChevronRight, Search } from "lucide-react";
+import { Sparkles, FileText, Upload, X, Plus, Download, Eye, ChevronRight, Search, Scale, Banknote, FileCheck, ScrollText, Gavel, AlertTriangle, Paperclip, User, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { fadeUp } from '@/lib/animations';
-import { mockActusClients, mockActusProcesses } from "@/lib/mock-data";
+import { useDocumentTemplates, useCreateGenerationRun } from "@/hooks/use-doc-generator";
+import { useClientes } from "@/hooks/use-clientes";
+import { toast } from "sonner";
 
-const templates = [
-  { id: '1', name: 'Petição Inicial', description: 'Modelo padrão de petição inicial cível', category: 'Cível', uses: 45 },
-  { id: '2', name: 'Recurso de Apelação', description: 'Modelo de apelação com fundamentação', category: 'Recursal', uses: 23 },
-  { id: '3', name: 'Contestação', description: 'Modelo de contestação com preliminares', category: 'Cível', uses: 38 },
-  { id: '4', name: 'Mandado de Segurança', description: 'Modelo de MS com pedido liminar', category: 'Administrativo', uses: 12 },
-  { id: '5', name: 'Contrato de Honorários', description: 'Modelo de contrato de prestação de serviços', category: 'Administrativo', uses: 67 },
-  { id: '6', name: 'Notificação Extrajudicial', description: 'Modelo de notificação para cobrança', category: 'Cobrança', uses: 31 },
-  { id: '7', name: 'Procuração Ad Judicia', description: 'Modelo de procuração judicial', category: 'Mandato', uses: 89 },
-  { id: '8', name: 'Substabelecimento', description: 'Modelo de substabelecimento com reservas', category: 'Mandato', uses: 54 },
+const COMPLEX_KEYWORDS = [
+  "petição inicial", "contestação", "mandado de segurança", "apelação",
+  "agravo", "embargos", "recurso especial", "recurso extraordinário",
+  "ação rescisória", "habeas corpus", "tutela provisória",
 ];
 
-type Step = 'select' | 'configure' | 'preview';
+const CATEGORIES = [
+  { key: "Representação", label: "Representação", icon: Scale, color: "text-primary" },
+  { key: "Honorários e Comercial", label: "Honorários e Comercial", icon: Banknote, color: "text-success" },
+  { key: "Financeiro e Custas", label: "Financeiro e Custas", icon: FileCheck, color: "text-warning" },
+  { key: "Declarações", label: "Declarações", icon: ScrollText, color: "text-ai" },
+  { key: "Petições Simples", label: "Petições Simples", icon: Gavel, color: "text-muted-foreground" },
+];
 
 export default function DocGeneratorPage() {
-  const [step, setStep] = useState<Step>('select');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
-  const [selectedClient, setSelectedClient] = useState('');
-  const [selectedProcess, setSelectedProcess] = useState('');
-  const [searchTemplate, setSearchTemplate] = useState('');
-  const [aiPrompt, setAiPrompt] = useState('');
+  const [searchTemplate, setSearchTemplate] = useState("");
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
+  const [useCliente, setUseCliente] = useState(false);
+  const [useProcesso, setUseProcesso] = useState(false);
+  const [useAnexos, setUseAnexos] = useState(true);
+  const [selectedClienteId, setSelectedClienteId] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const filteredTemplates = templates.filter(t =>
-    t.name.toLowerCase().includes(searchTemplate.toLowerCase()) ||
-    t.category.toLowerCase().includes(searchTemplate.toLowerCase())
-  );
+  const { data: templates = [], isLoading: loadingTemplates } = useDocumentTemplates();
+  const { data: clientes = [] } = useClientes();
+  const createRun = useCreateGenerationRun();
 
-  const selectedTmpl = templates.find(t => t.id === selectedTemplate);
+  const filteredTemplates = templates.filter((t) => {
+    const matchesCategory = !selectedCategory || t.categoria === selectedCategory;
+    const matchesSearch = !searchTemplate ||
+      t.nome.toLowerCase().includes(searchTemplate.toLowerCase()) ||
+      t.categoria.toLowerCase().includes(searchTemplate.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  const selectedTmpl = templates.find((t) => t.id === selectedTemplate);
+
+  const handleFileDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const files = Array.from(e.dataTransfer.files);
+    setAttachedFiles((prev) => [...prev, ...files]);
+  }, []);
+
+  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setAttachedFiles((prev) => [...prev, ...Array.from(e.target.files!)]);
+    }
+  }, []);
+
+  const removeFile = (index: number) => {
+    setAttachedFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const isComplexPiece = (text: string) => {
+    return COMPLEX_KEYWORDS.some((kw) => text.toLowerCase().includes(kw));
+  };
+
+  const handleGenerate = () => {
+    if (!aiPrompt.trim() && !selectedTemplate) {
+      toast.error("Descreva o documento ou selecione um modelo.");
+      return;
+    }
+    if (isComplexPiece(aiPrompt)) {
+      toast.error("Esse tipo de peça deve ser gerado no Workspace Jurídico / Redação.", {
+        icon: <AlertTriangle className="h-4 w-4" />,
+        duration: 5000,
+      });
+      return;
+    }
+    const prompt = selectedTmpl
+      ? `Gerar documento: ${selectedTmpl.nome}. ${aiPrompt}`
+      : aiPrompt;
+
+    createRun.mutate({
+      template_id: selectedTemplate || undefined,
+      cliente_id: useCliente && selectedClienteId ? selectedClienteId : undefined,
+      prompt,
+      files: attachedFiles.length > 0 ? attachedFiles : undefined,
+    });
+  };
+
+  const categoryCount = (key: string) => templates.filter((t) => t.categoria === key).length;
 
   return (
     <AppLayout>
       <div className="p-6 max-w-[1400px] mx-auto">
         <motion.div initial="hidden" animate="visible" variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.05 } } }}>
+
+          {/* Header */}
           <motion.div variants={fadeUp} className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-xl font-bold text-foreground tracking-tight flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-ai" /> Gerador de Documentos
+                <FileText className="h-5 w-5 text-primary" /> Gerar Documento
               </h1>
-              <p className="text-sm text-muted-foreground">Crie documentos jurídicos com IA</p>
+              <p className="text-sm text-muted-foreground">Fábrica de documentos simples, padronizados e operacionais</p>
             </div>
-            <Button className="active-scale gap-2"><Plus className="h-4 w-4" /> Novo Modelo</Button>
           </motion.div>
 
-          {/* Steps Indicator */}
-          <motion.div variants={fadeUp} className="flex items-center gap-2 mb-6">
-            {[
-              { key: 'select', label: '1. Escolher Tipo' },
-              { key: 'configure', label: '2. Configurar' },
-              { key: 'preview', label: '3. Prévia & Exportar' },
-            ].map((s, i) => (
-              <div key={s.key} className="flex items-center gap-2">
-                {i > 0 && <ChevronRight className="h-4 w-4 text-muted-foreground/40" />}
+          {/* Categories */}
+          <motion.div variants={fadeUp} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
+            {CATEGORIES.map((cat) => {
+              const Icon = cat.icon;
+              const isActive = selectedCategory === cat.key;
+              return (
                 <button
-                  onClick={() => {
-                    if (s.key === 'select') setStep('select');
-                    if (s.key === 'configure' && selectedTemplate) setStep('configure');
-                    if (s.key === 'preview' && selectedTemplate && selectedClient) setStep('preview');
-                  }}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                    step === s.key
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-secondary text-muted-foreground hover:text-foreground'
+                  key={cat.key}
+                  onClick={() => setSelectedCategory(isActive ? null : cat.key)}
+                  className={`bg-card rounded-xl border p-4 text-left transition-all group hover:shadow-elevated ${
+                    isActive ? "border-primary shadow-elevated" : "border-border hover:border-primary/30"
                   }`}
                 >
-                  {s.label}
+                  <div className="flex items-center gap-2.5 mb-1.5">
+                    <Icon className={`h-4.5 w-4.5 ${isActive ? "text-primary" : cat.color} transition-colors`} />
+                    <span className="text-xs font-semibold text-foreground">{cat.label}</span>
+                  </div>
+                  <span className="text-[10px] text-muted-foreground">{categoryCount(cat.key)} modelos</span>
                 </button>
-              </div>
-            ))}
+              );
+            })}
           </motion.div>
 
-          {/* AI Quick Generate */}
-          <motion.div variants={fadeUp} className="bg-card rounded-lg border border-ai/20 p-5 shadow-card mb-6">
-            <div className="flex items-center gap-2 mb-2">
+          {/* AI Composer */}
+          <motion.div variants={fadeUp} className="bg-card rounded-xl border border-ai/20 p-5 shadow-card mb-6">
+            <div className="flex items-center gap-2 mb-3">
               <Sparkles className="h-4 w-4 text-ai" />
               <h3 className="text-sm font-semibold text-foreground">Gerar com IA</h3>
             </div>
-            <p className="text-xs text-muted-foreground mb-3">Descreva o documento e a IA criará automaticamente com base nos dados do processo.</p>
-            <div className="flex gap-2">
-              <Input
+
+            {/* Chips */}
+            <div className="flex flex-wrap gap-2 mb-3">
+              <button
+                onClick={() => setUseCliente(!useCliente)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  useCliente ? "bg-primary/20 text-primary border border-primary/30" : "bg-secondary text-muted-foreground border border-border hover:text-foreground"
+                }`}
+              >
+                <User className="h-3 w-3" /> Usar cliente
+              </button>
+              <button
+                onClick={() => setUseProcesso(!useProcesso)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  useProcesso ? "bg-primary/20 text-primary border border-primary/30" : "bg-secondary text-muted-foreground border border-border hover:text-foreground"
+                }`}
+              >
+                <Briefcase className="h-3 w-3" /> Usar processo
+              </button>
+              <button
+                onClick={() => setUseAnexos(!useAnexos)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  useAnexos ? "bg-primary/20 text-primary border border-primary/30" : "bg-secondary text-muted-foreground border border-border hover:text-foreground"
+                }`}
+              >
+                <Paperclip className="h-3 w-3" /> Usar anexos
+              </button>
+            </div>
+
+            {/* Client selector */}
+            {useCliente && (
+              <div className="mb-3">
+                <select
+                  value={selectedClienteId}
+                  onChange={(e) => setSelectedClienteId(e.target.value)}
+                  className="w-full md:w-80 h-9 rounded-lg border border-border bg-secondary px-3 text-xs text-foreground"
+                >
+                  <option value="">Selecione o cliente...</option>
+                  {clientes.map((c) => (
+                    <option key={c.id} value={c.id}>{c.nome_razao_social}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {/* Selected template badge */}
+            {selectedTmpl && (
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-[10px] bg-primary/15 text-primary rounded-md px-2 py-1 font-medium flex items-center gap-1">
+                  <FileText className="h-3 w-3" /> {selectedTmpl.nome}
+                </span>
+                <button onClick={() => setSelectedTemplate(null)} className="text-muted-foreground hover:text-foreground">
+                  <X className="h-3 w-3" />
+                </button>
+              </div>
+            )}
+
+            {/* Textarea + drag-drop zone */}
+            <div
+              onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+              onDragLeave={() => setIsDragging(false)}
+              onDrop={handleFileDrop}
+              className={`relative rounded-lg border transition-all ${
+                isDragging ? "border-ai bg-ai/5" : "border-border"
+              }`}
+            >
+              {isDragging && (
+                <div className="absolute inset-0 flex items-center justify-center bg-ai/5 rounded-lg z-10 pointer-events-none">
+                  <div className="flex flex-col items-center gap-1">
+                    <Upload className="h-6 w-6 text-ai" />
+                    <span className="text-xs text-ai font-medium">Solte os arquivos aqui</span>
+                  </div>
+                </div>
+              )}
+              <Textarea
                 value={aiPrompt}
-                onChange={e => setAiPrompt(e.target.value)}
-                className="flex-1 bg-secondary border-border"
-                placeholder="Ex: Gerar petição de apelação para o processo 4001234-56.2024.8.26.0400"
+                onChange={(e) => setAiPrompt(e.target.value)}
+                className="min-h-[100px] bg-secondary border-0 resize-none text-sm"
+                placeholder="Descreva o documento ou anexe arquivos. Ex.: Faça uma procuração desse cliente com base na CNH e no comprovante de endereço."
               />
-              <Button className="gap-1.5 active-scale"><Sparkles className="h-4 w-4" /> Gerar</Button>
+            </div>
+
+            {/* Attached files */}
+            {attachedFiles.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-3">
+                {attachedFiles.map((file, i) => (
+                  <div key={i} className="flex items-center gap-1.5 bg-secondary rounded-lg px-2.5 py-1.5 text-xs text-foreground border border-border">
+                    <Paperclip className="h-3 w-3 text-muted-foreground" />
+                    <span className="max-w-[150px] truncate">{file.name}</span>
+                    <span className="text-[10px] text-muted-foreground">({(file.size / 1024).toFixed(0)}KB)</span>
+                    <button onClick={() => removeFile(i)} className="text-muted-foreground hover:text-destructive ml-1">
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="flex items-center justify-between mt-3">
+              <div className="flex gap-2">
+                <input ref={fileInputRef} type="file" multiple className="hidden" onChange={handleFileSelect} />
+                <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} className="gap-1.5 text-xs">
+                  <Paperclip className="h-3.5 w-3.5" /> Anexar
+                </Button>
+              </div>
+              <Button
+                onClick={handleGenerate}
+                disabled={createRun.isPending || (!aiPrompt.trim() && !selectedTemplate)}
+                className="gap-1.5"
+              >
+                <Sparkles className="h-4 w-4" />
+                {createRun.isPending ? "Gerando..." : "Gerar documento"}
+              </Button>
             </div>
           </motion.div>
 
-          {/* Step 1: Select Template */}
-          {step === 'select' && (
-            <motion.div variants={fadeUp}>
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-foreground">Modelos Disponíveis</h3>
-                <div className="relative w-60">
-                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-                  <Input
-                    placeholder="Buscar modelo..."
-                    value={searchTemplate}
-                    onChange={e => setSearchTemplate(e.target.value)}
-                    className="pl-8 h-8 text-xs bg-secondary"
-                  />
-                </div>
+          {/* Template grid */}
+          <motion.div variants={fadeUp}>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-foreground">
+                {selectedCategory || "Todos os modelos"}
+                <span className="text-muted-foreground font-normal ml-2">({filteredTemplates.length})</span>
+              </h3>
+              <div className="relative w-56">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                <Input
+                  placeholder="Buscar modelo..."
+                  value={searchTemplate}
+                  onChange={(e) => setSearchTemplate(e.target.value)}
+                  className="pl-8 h-8 text-xs bg-secondary"
+                />
               </div>
+            </div>
+
+            {loadingTemplates ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-                {filteredTemplates.map((tmpl) => (
-                  <button
-                    key={tmpl.id}
-                    onClick={() => { setSelectedTemplate(tmpl.id); setStep('configure'); }}
-                    className={`bg-card rounded-lg border p-4 text-left shadow-card hover:shadow-elevated transition-all group ${
-                      selectedTemplate === tmpl.id ? 'border-primary' : 'border-border hover:border-primary/30'
-                    }`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="h-10 w-10 rounded-lg bg-secondary flex items-center justify-center shrink-0">
-                        <FileText className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">{tmpl.name}</p>
-                        <p className="text-xs text-muted-foreground mt-0.5">{tmpl.description}</p>
-                        <div className="flex items-center gap-3 mt-2">
-                          <span className="text-[10px] bg-secondary text-muted-foreground rounded px-1.5 py-0.5">{tmpl.category}</span>
-                          <span className="text-[10px] text-muted-foreground">{tmpl.uses} usos</span>
-                        </div>
-                      </div>
-                    </div>
-                  </button>
+                {[...Array(8)].map((_, i) => (
+                  <div key={i} className="bg-card rounded-xl border border-border p-4 animate-pulse">
+                    <div className="h-4 bg-secondary rounded w-3/4 mb-2" />
+                    <div className="h-3 bg-secondary rounded w-full" />
+                  </div>
                 ))}
               </div>
-            </motion.div>
-          )}
-
-          {/* Step 2: Configure */}
-          {step === 'configure' && selectedTmpl && (
-            <motion.div variants={fadeUp} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <div className="bg-card rounded-lg border border-border p-5 shadow-card">
-                  <h3 className="text-sm font-semibold text-foreground mb-4">Configuração do Documento</h3>
-                  <div className="space-y-3">
-                    <div>
-                      <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Modelo selecionado</label>
-                      <div className="bg-secondary rounded-lg px-3 py-2 text-sm text-foreground">{selectedTmpl.name}</div>
-                    </div>
-                    <div>
-                      <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Cliente</label>
-                      <select
-                        value={selectedClient}
-                        onChange={e => setSelectedClient(e.target.value)}
-                        className="w-full h-10 rounded-lg border border-border bg-secondary px-3 text-sm text-foreground"
-                      >
-                        <option value="">Selecione o cliente...</option>
-                        {mockActusClients.slice(0, 20).map(c => (
-                          <option key={c.id} value={c.id}>{c.nome_razao_social}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Processo (opcional)</label>
-                      <select
-                        value={selectedProcess}
-                        onChange={e => setSelectedProcess(e.target.value)}
-                        className="w-full h-10 rounded-lg border border-border bg-secondary px-3 text-sm text-foreground"
-                      >
-                        <option value="">Selecione o processo...</option>
-                        {mockActusProcesses.slice(0, 20).map(p => (
-                          <option key={p.id} value={p.id}>{p.numero_cnj} — {p.titulo}</option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Variables */}
-                <div className="bg-card rounded-lg border border-border p-5 shadow-card">
-                  <h3 className="text-sm font-semibold text-foreground mb-4">Variáveis do Modelo</h3>
-                  <div className="space-y-3">
-                    {['Comarca', 'Vara', 'Juiz', 'Valor da causa'].map((v) => (
-                      <div key={v}>
-                        <label className="text-xs font-medium text-muted-foreground mb-1.5 block">{v}</label>
-                        <Input className="bg-secondary border-border" placeholder={`Preencher ${v.toLowerCase()}...`} />
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                {filteredTemplates.map((tmpl) => {
+                  const catDef = CATEGORIES.find((c) => c.key === tmpl.categoria);
+                  const Icon = catDef?.icon || FileText;
+                  const isSelected = selectedTemplate === tmpl.id;
+                  return (
+                    <button
+                      key={tmpl.id}
+                      onClick={() => {
+                        setSelectedTemplate(isSelected ? null : tmpl.id);
+                      }}
+                      className={`bg-card rounded-xl border p-4 text-left shadow-card hover:shadow-elevated transition-all group ${
+                        isSelected ? "border-primary ring-1 ring-primary/20" : "border-border hover:border-primary/30"
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className={`h-9 w-9 rounded-lg bg-secondary flex items-center justify-center shrink-0 ${isSelected ? "bg-primary/10" : ""}`}>
+                          <Icon className={`h-4 w-4 ${isSelected ? "text-primary" : "text-muted-foreground"} group-hover:text-primary transition-colors`} />
+                        </div>
+                        <div className="min-w-0">
+                          <p className={`text-sm font-medium ${isSelected ? "text-primary" : "text-foreground"} group-hover:text-primary transition-colors`}>
+                            {tmpl.nome}
+                          </p>
+                          {tmpl.descricao && (
+                            <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-2">{tmpl.descricao}</p>
+                          )}
+                          <div className="flex items-center gap-2 mt-2">
+                            <span className="text-[10px] bg-secondary text-muted-foreground rounded px-1.5 py-0.5">{tmpl.categoria}</span>
+                            <span className="text-[10px] text-muted-foreground">{tmpl.usos} usos</span>
+                          </div>
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex gap-2">
-                  <Button variant="outline" onClick={() => setStep('select')}>Voltar</Button>
-                  <Button onClick={() => setStep('preview')} disabled={!selectedClient} className="gap-1.5">
-                    <Eye className="h-4 w-4" /> Ver prévia
-                  </Button>
-                </div>
+                    </button>
+                  );
+                })}
               </div>
-
-              {/* Live preview placeholder */}
-              <div className="bg-card rounded-lg border border-border shadow-card overflow-hidden">
-                <div className="border-b border-border px-4 py-2.5 flex items-center justify-between">
-                  <span className="text-xs font-semibold text-foreground">Prévia do Documento</span>
-                  <span className="text-[10px] text-muted-foreground">Atualiza em tempo real</span>
-                </div>
-                <div className="p-6 min-h-[500px] bg-secondary/30">
-                  <div className="bg-background rounded-lg p-8 shadow-sm border border-border max-w-lg mx-auto">
-                    <div className="text-center mb-6">
-                      <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Excelentíssimo(a) Senhor(a) Juiz(a) de Direito</p>
-                      <p className="text-[10px] text-muted-foreground mt-1">da ___ Vara do Trabalho de ___</p>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="h-3 bg-secondary rounded w-full" />
-                      <div className="h-3 bg-secondary rounded w-5/6" />
-                      <div className="h-3 bg-secondary rounded w-4/5" />
-                      <div className="h-3 bg-secondary rounded w-full" />
-                      <div className="h-3 bg-secondary rounded w-3/4" />
-                    </div>
-                    <div className="mt-6 pt-4 border-t border-border text-center">
-                      <p className="text-[10px] text-muted-foreground">Nestes termos, pede deferimento.</p>
-                      <p className="text-[10px] text-muted-foreground mt-2">___, ___ de ___ de 2025</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Step 3: Preview & Export */}
-          {step === 'preview' && (
-            <motion.div variants={fadeUp} className="space-y-4">
-              <div className="bg-card rounded-lg border border-border p-5 shadow-card">
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <h3 className="text-sm font-semibold text-foreground">{selectedTmpl?.name}</h3>
-                    <p className="text-xs text-muted-foreground mt-0.5">Documento pronto para revisão e exportação</p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" onClick={() => setStep('configure')} size="sm">Voltar</Button>
-                    <Button variant="outline" size="sm" className="gap-1.5">
-                      <Save className="h-3.5 w-3.5" /> Salvar rascunho
-                    </Button>
-                    <Button variant="outline" size="sm" className="gap-1.5">
-                      <Download className="h-3.5 w-3.5" /> Exportar Word
-                    </Button>
-                    <Button size="sm" className="gap-1.5">
-                      <Download className="h-3.5 w-3.5" /> Exportar PDF
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Document Preview */}
-                <div className="bg-secondary/30 rounded-lg p-8 min-h-[600px]">
-                  <div className="bg-background rounded-lg p-10 shadow-sm border border-border max-w-2xl mx-auto">
-                    <div className="text-center mb-8">
-                      <p className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">
-                        Excelentíssimo(a) Senhor(a) Juiz(a) de Direito
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">da ___ Vara do Trabalho de ___</p>
-                    </div>
-                    <div className="space-y-4 text-xs text-foreground leading-relaxed">
-                      <p><strong>JOÃO DA SILVA</strong>, brasileiro, portador do CPF nº 000.000.000-00, residente e domiciliado na cidade de São Paulo/SP, vem, respeitosamente, à presença de Vossa Excelência, por intermédio de seus advogados que esta subscrevem, propor a presente</p>
-                      <p className="text-center font-semibold text-sm tracking-wide text-foreground">
-                        {selectedTmpl?.name?.toUpperCase()}
-                      </p>
-                      <p>em face de <strong>EMPRESA RÉ LTDA.</strong>, pessoa jurídica de direito privado, inscrita no CNPJ sob nº 00.000.000/0001-00, com sede na Rua Exemplo, nº 100, São Paulo/SP, pelos fatos e fundamentos a seguir expostos.</p>
-                      <p className="font-semibold mt-4">I — DOS FATOS</p>
-                      <p>O reclamante foi admitido pela reclamada em 01/01/2020, exercendo a função de analista, com salário mensal de R$ 5.000,00. Durante o contrato de trabalho, sofreu diversas irregularidades que configuram rescisão indireta do contrato de trabalho.</p>
-                      <p className="font-semibold mt-4">II — DO DIREITO</p>
-                      <p>Conforme disposto no artigo 483 da CLT, o empregado poderá considerar rescindido o contrato e pleitear a devida indenização quando...</p>
-                    </div>
-                    <div className="mt-10 pt-6 border-t border-border text-center text-xs text-muted-foreground">
-                      <p>Nestes termos, pede deferimento.</p>
-                      <p className="mt-3">São Paulo, 30 de março de 2025</p>
-                      <p className="mt-4 font-medium text-foreground">_______________________________</p>
-                      <p className="text-[10px]">OAB/SP nº 000.000</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
+            )}
+          </motion.div>
         </motion.div>
       </div>
     </AppLayout>
