@@ -112,6 +112,154 @@ export type Database = {
         }
         Relationships: []
       }
+      document_generation_files: {
+        Row: {
+          caminho_storage: string
+          campos_extraidos: Json | null
+          created_at: string
+          id: string
+          nome_arquivo: string
+          run_id: string
+          tipo_arquivo: string | null
+        }
+        Insert: {
+          caminho_storage: string
+          campos_extraidos?: Json | null
+          created_at?: string
+          id?: string
+          nome_arquivo: string
+          run_id: string
+          tipo_arquivo?: string | null
+        }
+        Update: {
+          caminho_storage?: string
+          campos_extraidos?: Json | null
+          created_at?: string
+          id?: string
+          nome_arquivo?: string
+          run_id?: string
+          tipo_arquivo?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_generation_files_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "document_generation_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      document_generation_runs: {
+        Row: {
+          campos_extraidos: Json | null
+          case_id: string | null
+          cliente_id: string | null
+          created_at: string
+          documento_docx_path: string | null
+          documento_final: string | null
+          id: string
+          process_id: string | null
+          prompt: string | null
+          status: string
+          template_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          campos_extraidos?: Json | null
+          case_id?: string | null
+          cliente_id?: string | null
+          created_at?: string
+          documento_docx_path?: string | null
+          documento_final?: string | null
+          id?: string
+          process_id?: string | null
+          prompt?: string | null
+          status?: string
+          template_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          campos_extraidos?: Json | null
+          case_id?: string | null
+          cliente_id?: string | null
+          created_at?: string
+          documento_docx_path?: string | null
+          documento_final?: string | null
+          id?: string
+          process_id?: string | null
+          prompt?: string | null
+          status?: string
+          template_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_generation_runs_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "workspace_cases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "document_generation_runs_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "document_generation_runs_process_id_fkey"
+            columns: ["process_id"]
+            isOneToOne: false
+            referencedRelation: "workspace_processes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "document_generation_runs_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "document_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      document_templates: {
+        Row: {
+          ativo: boolean
+          categoria: string
+          conteudo_template: string | null
+          created_at: string
+          descricao: string | null
+          id: string
+          nome: string
+          updated_at: string
+          usos: number
+        }
+        Insert: {
+          ativo?: boolean
+          categoria: string
+          conteudo_template?: string | null
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome: string
+          updated_at?: string
+          usos?: number
+        }
+        Update: {
+          ativo?: boolean
+          categoria?: string
+          conteudo_template?: string | null
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome?: string
+          updated_at?: string
+          usos?: number
+        }
+        Relationships: []
+      }
       workspace_cases: {
         Row: {
           area_juridica: string | null
