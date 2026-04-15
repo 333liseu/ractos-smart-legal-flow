@@ -330,22 +330,22 @@ export const mockActusTasks: ActusTask[] = [
 
 
 export const actusStats = {
-  processosAtivos: mockActusProcesses.filter(p => p.status === 'Ativo').length,
-  totalClientes: mockActusClients.length,
-  tarefasPendentes: mockActusTasks.filter(t => t.status === 'Pendente').length,
-  tarefasUrgentes: mockActusTasks.filter(t => t.prioridade === 'Alta' && t.status === 'Pendente').length,
-  receitaMes: 235960,
-  processosArquivados: mockActusProcesses.filter(p => p.status === 'Arquivado').length,
-  processosSuspensos: mockActusProcesses.filter(p => p.status === 'Suspenso').length,
-  intimacoesNaoLidas: mockActusIntimations.filter(i => i.leitura_status === 'Não lida').length,
+  processosAtivos: 2628,
+  totalClientes: 1648,
+  tarefasPendentes: 126,
+  tarefasUrgentes: 45,
+  receitaMes: 1096000.00,
+  processosArquivados: 3097,
+  processosSuspensos: 333,
+  intimacoesNaoLidas: 78,
   processosPorArea: (() => {
     const map: Record<string, number> = {};
     mockActusProcesses.forEach(p => { map[p.area] = (map[p.area] || 0) + 1; });
     return Object.entries(map).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
   })(),
   processosPorStatus: [
-    { name: 'Ativo', value: mockActusProcesses.filter(p => p.status === 'Ativo').length, color: 'hsl(217.2, 91.2%, 59.8%)' },
-    { name: 'Arquivado', value: mockActusProcesses.filter(p => p.status === 'Arquivado').length, color: 'hsl(240, 5%, 50%)' },
-    { name: 'Suspenso', value: mockActusProcesses.filter(p => p.status === 'Suspenso').length, color: 'hsl(38, 92%, 50%)' },
+    { name: 'Ativo', value: 2628, color: 'hsl(217.2, 91.2%, 59.8%)' },
+    { name: 'Arquivado', value: 3097, color: 'hsl(240, 5%, 50%)' },
+    { name: 'Suspenso', value: 333, color: 'hsl(38, 92%, 50%)' },
   ],
 };
