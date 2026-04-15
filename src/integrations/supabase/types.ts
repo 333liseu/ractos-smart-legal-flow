@@ -601,6 +601,400 @@ export type Database = {
           },
         ]
       }
+      zap_ai_requests: {
+        Row: {
+          conversation_id: string | null
+          created_at: string
+          id: string
+          prompt: string
+          request_type: string
+          response_json: Json | null
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          conversation_id?: string | null
+          created_at?: string
+          id?: string
+          prompt: string
+          request_type?: string
+          response_json?: Json | null
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          conversation_id?: string | null
+          created_at?: string
+          id?: string
+          prompt?: string
+          request_type?: string
+          response_json?: Json | null
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "zap_ai_requests_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "zap_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      zap_analytics_cache: {
+        Row: {
+          generated_at: string
+          id: string
+          metric_key: string
+          metric_scope_json: Json | null
+          result_json: Json
+        }
+        Insert: {
+          generated_at?: string
+          id?: string
+          metric_key: string
+          metric_scope_json?: Json | null
+          result_json: Json
+        }
+        Update: {
+          generated_at?: string
+          id?: string
+          metric_key?: string
+          metric_scope_json?: Json | null
+          result_json?: Json
+        }
+        Relationships: []
+      }
+      zap_assignments: {
+        Row: {
+          assigned_by_name: string | null
+          assigned_by_user_id: string | null
+          assigned_to_name: string | null
+          assigned_to_user_id: string
+          assignment_type: string
+          conversation_id: string
+          created_at: string
+          id: string
+          note: string | null
+        }
+        Insert: {
+          assigned_by_name?: string | null
+          assigned_by_user_id?: string | null
+          assigned_to_name?: string | null
+          assigned_to_user_id: string
+          assignment_type?: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          note?: string | null
+        }
+        Update: {
+          assigned_by_name?: string | null
+          assigned_by_user_id?: string | null
+          assigned_to_name?: string | null
+          assigned_to_user_id?: string
+          assignment_type?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          note?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "zap_assignments_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "zap_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      zap_attachments: {
+        Row: {
+          ai_request_id: string | null
+          conversation_id: string | null
+          created_at: string
+          extracted_text: string | null
+          file_name: string
+          file_size: number | null
+          file_type: string | null
+          file_url: string | null
+          id: string
+          message_id: string | null
+          metadata_json: Json | null
+          storage_path: string
+        }
+        Insert: {
+          ai_request_id?: string | null
+          conversation_id?: string | null
+          created_at?: string
+          extracted_text?: string | null
+          file_name: string
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string | null
+          id?: string
+          message_id?: string | null
+          metadata_json?: Json | null
+          storage_path: string
+        }
+        Update: {
+          ai_request_id?: string | null
+          conversation_id?: string | null
+          created_at?: string
+          extracted_text?: string | null
+          file_name?: string
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string | null
+          id?: string
+          message_id?: string | null
+          metadata_json?: Json | null
+          storage_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "zap_attachments_ai_request_id_fkey"
+            columns: ["ai_request_id"]
+            isOneToOne: false
+            referencedRelation: "zap_ai_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "zap_attachments_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "zap_conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "zap_attachments_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "zap_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      zap_conversations: {
+        Row: {
+          ai_enabled: boolean
+          channel_type: string
+          client_id: string | null
+          client_name: string | null
+          client_phone: string | null
+          created_at: string
+          external_conversation_id: string | null
+          id: string
+          last_message_at: string | null
+          priority: string | null
+          process_id: string | null
+          responsible_user_id: string | null
+          status: string
+          subject: string | null
+          tags: string[] | null
+          unread_count: number
+          updated_at: string
+        }
+        Insert: {
+          ai_enabled?: boolean
+          channel_type?: string
+          client_id?: string | null
+          client_name?: string | null
+          client_phone?: string | null
+          created_at?: string
+          external_conversation_id?: string | null
+          id?: string
+          last_message_at?: string | null
+          priority?: string | null
+          process_id?: string | null
+          responsible_user_id?: string | null
+          status?: string
+          subject?: string | null
+          tags?: string[] | null
+          unread_count?: number
+          updated_at?: string
+        }
+        Update: {
+          ai_enabled?: boolean
+          channel_type?: string
+          client_id?: string | null
+          client_name?: string | null
+          client_phone?: string | null
+          created_at?: string
+          external_conversation_id?: string | null
+          id?: string
+          last_message_at?: string | null
+          priority?: string | null
+          process_id?: string | null
+          responsible_user_id?: string | null
+          status?: string
+          subject?: string | null
+          tags?: string[] | null
+          unread_count?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "zap_conversations_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "zap_conversations_process_id_fkey"
+            columns: ["process_id"]
+            isOneToOne: false
+            referencedRelation: "workspace_processes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      zap_executive_actions: {
+        Row: {
+          action_description: string | null
+          action_type: string
+          confirmation_status: string
+          created_at: string
+          execution_result_json: Json | null
+          execution_status: string
+          id: string
+          parsed_payload_json: Json | null
+          requested_by_name: string | null
+          requested_by_user_id: string | null
+          source_channel: string
+          source_message_id: string | null
+        }
+        Insert: {
+          action_description?: string | null
+          action_type: string
+          confirmation_status?: string
+          created_at?: string
+          execution_result_json?: Json | null
+          execution_status?: string
+          id?: string
+          parsed_payload_json?: Json | null
+          requested_by_name?: string | null
+          requested_by_user_id?: string | null
+          source_channel?: string
+          source_message_id?: string | null
+        }
+        Update: {
+          action_description?: string | null
+          action_type?: string
+          confirmation_status?: string
+          created_at?: string
+          execution_result_json?: Json | null
+          execution_status?: string
+          id?: string
+          parsed_payload_json?: Json | null
+          requested_by_name?: string | null
+          requested_by_user_id?: string | null
+          source_channel?: string
+          source_message_id?: string | null
+        }
+        Relationships: []
+      }
+      zap_mentions: {
+        Row: {
+          conversation_id: string
+          created_at: string
+          id: string
+          matched_text: string
+          mentioned_user_id: string
+          mentioned_user_name: string | null
+          message_id: string | null
+          status: string
+        }
+        Insert: {
+          conversation_id: string
+          created_at?: string
+          id?: string
+          matched_text: string
+          mentioned_user_id: string
+          mentioned_user_name?: string | null
+          message_id?: string | null
+          status?: string
+        }
+        Update: {
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          matched_text?: string
+          mentioned_user_id?: string
+          mentioned_user_name?: string | null
+          message_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "zap_mentions_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "zap_conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "zap_mentions_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "zap_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      zap_messages: {
+        Row: {
+          content: string
+          content_type: string
+          conversation_id: string
+          created_at: string
+          external_message_id: string | null
+          id: string
+          is_read: boolean
+          metadata_json: Json | null
+          sender_name: string | null
+          sender_type: string
+          sender_user_id: string | null
+        }
+        Insert: {
+          content: string
+          content_type?: string
+          conversation_id: string
+          created_at?: string
+          external_message_id?: string | null
+          id?: string
+          is_read?: boolean
+          metadata_json?: Json | null
+          sender_name?: string | null
+          sender_type?: string
+          sender_user_id?: string | null
+        }
+        Update: {
+          content?: string
+          content_type?: string
+          conversation_id?: string
+          created_at?: string
+          external_message_id?: string | null
+          id?: string
+          is_read?: boolean
+          metadata_json?: Json | null
+          sender_name?: string | null
+          sender_type?: string
+          sender_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "zap_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "zap_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
