@@ -330,13 +330,13 @@ export const mockActusTasks: ActusTask[] = [
 
 
 export const actusStats = {
-  processosAtivos: 2628,
-  totalClientes: 1648,
+  processosAtivos: 3010,
+  totalClientes: 3918,
   tarefasPendentes: 126,
   tarefasUrgentes: 45,
   receitaMes: 1096000.00,
-  processosArquivados: 3097,
-  processosSuspensos: 333,
+  processosArquivados: 1999,
+  processosSuspensos: 955,
   intimacoesNaoLidas: 78,
   processosPorArea: (() => {
     const map: Record<string, number> = {};
@@ -344,8 +344,8 @@ export const actusStats = {
     return Object.entries(map).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
   })(),
   processosPorStatus: [
-    { name: 'Ativo', value: 2628, color: 'hsl(217.2, 91.2%, 59.8%)' },
-    { name: 'Arquivado', value: 3097, color: 'hsl(240, 5%, 50%)' },
-    { name: 'Suspenso', value: 333, color: 'hsl(38, 92%, 50%)' },
+    { name: 'Ativo', value: 3918, color: 'hsl(var(--destructive))' },
+    { name: 'Arquivado', value: 1999, color: '#fcd34d' },
+    { name: 'Suspenso', value: 955, color: 'hsl(var(--success))' },
   ],
 };
