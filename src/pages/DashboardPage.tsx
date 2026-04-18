@@ -7,6 +7,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, PieChart, Pie, 
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { fadeUp } from '@/lib/animations';
+import { cn } from "@/lib/utils";
 
 const formatCurrency = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(v);
 const CHART_COLORS = ['hsl(217.2, 91.2%, 59.8%)', 'hsl(263.4, 70%, 50.4%)', 'hsl(38, 92%, 50%)', 'hsl(142, 71%, 45%)', 'hsl(0, 84.2%, 60.2%)', 'hsl(200, 70%, 50%)'];
