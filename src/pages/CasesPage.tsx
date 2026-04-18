@@ -45,9 +45,15 @@ export default function CasesPage() {
           </motion.div>
 
           <motion.div variants={fadeUp} className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-            <KpiCard title="Judicial" value={counts.judicial} icon={<Briefcase className="h-5 w-5" />} />
-            <KpiCard title="Recursos" value={counts.recurso} icon={<Briefcase className="h-5 w-5" />} />
-            <KpiCard title="Ativos" value={counts.ativo} icon={<Briefcase className="h-5 w-5" />} variant="success" />
+            <KpiCard title="Processos" value="955" icon={<Briefcase className="h-5 w-5" />} />
+            <KpiCard 
+              title="Ativos" 
+              value="1.999" 
+              icon={<Briefcase className="h-5 w-5 border-success" />} 
+              className="border-success"
+              iconContainerClassName="border-success"
+            />
+            <KpiCard title="suspensos" value="3.010" icon={<Briefcase className="h-5 w-5" />} variant="success" />
             <KpiCard title="Arquivados" value={counts.arquivado} icon={<Briefcase className="h-5 w-5" />} />
           </motion.div>
 
