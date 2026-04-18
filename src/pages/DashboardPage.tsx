@@ -54,7 +54,7 @@ export default function DashboardPage() {
               <h3 className="text-sm font-semibold text-foreground mb-4">Processos por Status</h3>
               <div className="flex items-center gap-6">
                 <ResponsiveContainer width={160} height={160}>
-                  <PieChart>
+                  <PieChart className="border-destructive">
                     <Pie data={actusStats.processosPorStatus} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={45} outerRadius={70} paddingAngle={3}>
                       {actusStats.processosPorStatus.map((entry, i) => (
                         <Cell key={i} fill={entry.color} />
@@ -64,9 +64,12 @@ export default function DashboardPage() {
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="space-y-2">
-                  {actusStats.processosPorStatus.map((item) => (
+                  {actusStats.processosPorStatus.map((item, i) => (
                     <div key={item.name} className="flex items-center gap-2">
-                      <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                      <div className={cn(
+                        "h-2.5 w-2.5 rounded-full",
+                        i === 0 ? "bg-destructive" : i === 1 ? "bg-amber-300" : "bg-success"
+                      )} />
                       <span className="text-xs text-muted-foreground">{item.name}</span>
                       <span className="text-xs font-semibold text-foreground ml-auto tabular-nums">{item.value}</span>
                     </div>
