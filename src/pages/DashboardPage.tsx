@@ -68,7 +68,7 @@ export default function DashboardPage() {
                     <div key={item.name} className="flex items-center gap-2">
                       <div className={cn(
                         "h-2.5 w-2.5 rounded-full",
-                        i === 0 ? "bg-destructive" : i === 1 ? "bg-amber-300" : "bg-success"
+                        i === 0 ? "bg-success" : i === 1 ? "bg-amber-300" : "bg-success"
                       )} />
                       <span className="text-xs text-muted-foreground">{item.name}</span>
                       <span className="text-xs font-semibold text-foreground ml-auto tabular-nums">{item.value}</span>
