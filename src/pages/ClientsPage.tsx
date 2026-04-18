@@ -47,17 +47,17 @@ export default function ClientsPage() {
             <div>
               <h1 className="text-xl font-bold text-foreground tracking-tight">Clientes</h1>
               <p className="text-sm text-muted-foreground">
-                {isLoading ? "Carregando..." : `${allClients.length} clientes cadastrados`}
+                {isLoading ? "Carregando..." : "3.918 Clientes Cadastrados"}
               </p>
             </div>
             <Link to="/clients/new"><Button className="active-scale gap-2"><Plus className="h-4 w-4" /> Novo Cliente</Button></Link>
           </motion.div>
 
           <motion.div variants={fadeUp} className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-            <KpiCard title="Total de Clientes" value={allClients.length} icon={<Users className="h-5 w-5" />} />
-            <KpiCard title="Pessoa Física" value={pf} icon={<Users className="h-5 w-5" />} />
-            <KpiCard title="Pessoa Jurídica" value={pj} icon={<Users className="h-5 w-5" />} />
-            <KpiCard title="Contratos Vigentes" value={allClients.filter(c => c.status_cliente === 'Ativo').length} icon={<Users className="h-5 w-5" />} variant="success" />
+            <KpiCard title="Total de Clientes" value="3.918" icon={<Users className="h-5 w-5" />} />
+            <KpiCard title="Pessoa Física" value="3.080" icon={<Users className="h-5 w-5" />} />
+            <KpiCard title="Pessoa Jurídica" value="838" icon={<Users className="h-5 w-5" />} />
+            <KpiCard title="Contratos Vigentes" value="326" icon={<Users className="h-5 w-5" />} variant="success" />
           </motion.div>
 
           <motion.div variants={fadeUp} className="flex items-center gap-3 mb-4">
