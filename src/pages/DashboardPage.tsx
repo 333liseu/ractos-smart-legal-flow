@@ -7,6 +7,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, PieChart, Pie, 
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { fadeUp } from '@/lib/animations';
+import { cn } from "@/lib/utils";
 
 const formatCurrency = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(v);
 const CHART_COLORS = ['hsl(217.2, 91.2%, 59.8%)', 'hsl(263.4, 70%, 50.4%)', 'hsl(38, 92%, 50%)', 'hsl(142, 71%, 45%)', 'hsl(0, 84.2%, 60.2%)', 'hsl(200, 70%, 50%)'];
@@ -53,7 +54,7 @@ export default function DashboardPage() {
               <h3 className="text-sm font-semibold text-foreground mb-4">Processos por Status</h3>
               <div className="flex items-center gap-6">
                 <ResponsiveContainer width={160} height={160}>
-                  <PieChart>
+                  <PieChart className="border-destructive">
                     <Pie data={actusStats.processosPorStatus} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={45} outerRadius={70} paddingAngle={3}>
                       {actusStats.processosPorStatus.map((entry, i) => (
                         <Cell key={i} fill={entry.color} />
@@ -63,9 +64,12 @@ export default function DashboardPage() {
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="space-y-2">
-                  {actusStats.processosPorStatus.map((item) => (
+                  {actusStats.processosPorStatus.map((item, i) => (
                     <div key={item.name} className="flex items-center gap-2">
-                      <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                      <div className={cn(
+                        "h-2.5 w-2.5 rounded-full",
+                        i === 0 ? "bg-destructive" : i === 1 ? "bg-amber-300" : "bg-success"
+                      )} />
                       <span className="text-xs text-muted-foreground">{item.name}</span>
                       <span className="text-xs font-semibold text-foreground ml-auto tabular-nums">{item.value}</span>
                     </div>
