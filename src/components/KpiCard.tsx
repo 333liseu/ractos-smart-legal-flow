@@ -8,9 +8,20 @@ interface KpiCardProps {
   icon: ReactNode;
   trend?: { value: number; positive: boolean };
   variant?: "default" | "urgent" | "success" | "ai";
+  className?: string;
+  iconContainerClassName?: string;
 }
 
-export function KpiCard({ title, value, subtitle, icon, trend, variant = "default" }: KpiCardProps) {
+export function KpiCard({ 
+  title, 
+  value, 
+  subtitle, 
+  icon, 
+  trend, 
+  variant = "default",
+  className,
+  iconContainerClassName 
+}: KpiCardProps) {
   const borderColor = {
     default: "border-border",
     urgent: "border-urgent/30",
@@ -21,7 +32,8 @@ export function KpiCard({ title, value, subtitle, icon, trend, variant = "defaul
   return (
     <div className={cn(
       "bg-card rounded-lg border p-5 shadow-card transition-all hover:shadow-elevated",
-      borderColor
+      borderColor,
+      className
     )}>
       <div className="flex items-start justify-between">
         <div className="space-y-1">
@@ -35,11 +47,12 @@ export function KpiCard({ title, value, subtitle, icon, trend, variant = "defaul
           )}
         </div>
         <div className={cn(
-          "h-10 w-10 rounded-lg flex items-center justify-center shrink-0",
+          "h-10 w-10 rounded-lg flex items-center justify-center shrink-0 border",
           variant === "urgent" ? "bg-urgent/10 text-urgent" :
           variant === "success" ? "bg-success/10 text-success" :
           variant === "ai" ? "bg-ai-subtle text-ai" :
-          "bg-secondary text-muted-foreground"
+          "bg-secondary text-muted-foreground",
+          iconContainerClassName
         )}>
           {icon}
         </div>
